@@ -1,42 +1,47 @@
 import { useEffect, useState } from "react";
-import "./App.css";
 import Garage from "./components/Garage/garage";
 import Header from "./components/Header/header";
+import Winners from "./components/Winners/winners";
 import "./tailwind.css";
+import "./App.css";
 
-interface GarageData {
+interface CarData {
   name: string;
   color: string;
   id: number;
 }
 
 function App() {
-  const [garage, setGarage] = useState<GarageData[] | null>(null);
+  const [garageData, setGarageData] = useState<CarData[] | null>(null);
+  const [page, setPage] = useState("garage");
 
-  const getGarage = async () => {
+  const getGarageData = async () => {
     try {
       const response = await fetch("http://127.0.0.1:3000/garage");
       if (!response.ok) {
         throw new Error("Failed to fetch data");
       }
       const jsonData = await response.json();
-      setGarage(jsonData);
-      console.log(garage);
+      setGarageData(jsonData);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
 
   useEffect(() => {
-    getGarage();
+    getGarageData();
   }, []);
-
-  console.log(garage?.length);
 
   return (
     <div className="App">
-      <Header />
-      <main>{garage && <Garage garage={garage} getGarage={getGarage} />}</main>
+      <Header setPage={setPage} />
+      <main>
+        {page === "garage" ? (
+          garageData && <Garage garage={garageData} getGarage={getGarageData} />
+        ) : (
+          <Winners />
+        )}
+      </main>
     </div>
   );
 }

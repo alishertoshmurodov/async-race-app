@@ -56,6 +56,7 @@ const CreateCar = ({ getGarage }: any) => {
           className="border p-2 rounded"
           placeholder="TYPE CAR BRAND"
           onChange={handleChange}
+          required
         />
         <input
           type="color"

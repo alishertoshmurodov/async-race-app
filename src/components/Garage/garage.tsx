@@ -8,6 +8,12 @@ import CreateCar from "./createCar";
 import UpdateCar from "./updateCar";
 import GenerateCars from "./generateCars";
 
+interface Car {
+  name: string;
+  color: string;
+  id: number | null;
+}
+
 const RaceReset = () => {
   return (
     <div className="flex gap-3 order-1 md:order-3">
@@ -32,7 +38,11 @@ function Garage({ garage, getGarage }: any) {
   const totalPageCount = Math.ceil(garage.length / itemsPerPage);
 
   const [deleteResult, setDeleteResult] = useState(null);
-  const [selectedCar, setSelectedCar] = useState(false);
+  const [selectedCar, setSelectedCar] = useState<Car>({
+    name: "",
+    color: "",
+    id: null,
+  });
 
   const handleDelete = async (id: any) => {
     try {
@@ -59,8 +69,11 @@ function Garage({ garage, getGarage }: any) {
     }
   };
 
-  const handleSelect = (id: any) =>
-    selectedCar === id ? setSelectedCar(false) : setSelectedCar(id);
+  const handleSelect = (car: Car) => {
+    selectedCar === car
+      ? setSelectedCar({ name: "", color: "#000000", id: null })
+      : setSelectedCar(car);
+  };
 
   const garageItemEls = garage.map((item: any) => {
     return (
@@ -69,9 +82,9 @@ function Garage({ garage, getGarage }: any) {
           <div className="grid grid-cols-2 gap-x gap-y-2 w-auto py-4 justify-items-center">
             <button
               className={`button text-sm !py-1 !px-2 font-medium order-1 transition duration-300 ease-in-out ${
-                selectedCar === item.id ? "bg-gray-900 text-white" : ""
+                selectedCar.id === item.id ? "bg-gray-900 text-white" : ""
               }`}
-              onClick={() => handleSelect(item.id)}
+              onClick={() => handleSelect(item)}
             >
               Select
             </button>

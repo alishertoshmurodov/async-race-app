@@ -8,8 +8,8 @@ const UpdateCar = ({ selectedCar, setSelectedCar, getGarage }: any) => {
 
   const [updateCarData, setUpdateCarData] = useState(null);
   const [carData, setCarData] = useState<Data>({
-    name: "",
-    color: "#000000",
+    name: selectedCar.name,
+    color: selectedCar.color,
   });
 
   const handleUpdateCar = async (e: any) => {
@@ -17,7 +17,7 @@ const UpdateCar = ({ selectedCar, setSelectedCar, getGarage }: any) => {
 
     try {
       const response = await fetch(
-        `http://127.0.0.1:3000/garage/${selectedCar}`,
+        `http://127.0.0.1:3000/garage/${selectedCar.id}`,
         {
           method: "PUT",
           headers: {
@@ -36,8 +36,7 @@ const UpdateCar = ({ selectedCar, setSelectedCar, getGarage }: any) => {
       setUpdateCarData(data); // Update state with response data
       getGarage();
       setCarData({ name: "", color: "#000000" });
-      setSelectedCar(null);
-
+      setSelectedCar({ name: "", color: "#000000", id: null });
       console.log(updateCarData);
     } catch (error) {
       console.error("Error updating resource:", error);
@@ -55,20 +54,21 @@ const UpdateCar = ({ selectedCar, setSelectedCar, getGarage }: any) => {
           name="name"
           value={carData.name}
           onChange={(e) => setCarData({ ...carData, name: e.target.value })}
+          required
         />
         <input
           type="color"
           name="color"
           className="size-10 cursor-pointer"
-          value={carData.color}
+          defaultValue={"#000000"}
           onChange={(e) => setCarData({ ...carData, color: e.target.value })}
         />
         <button
           type="submit"
           className={`button ease-in-out duration-700 transition-all ${
-            selectedCar ? "" : "opacity-50"
+            selectedCar.id ? "" : "opacity-50"
           }`}
-          disabled={!selectedCar}
+          disabled={!selectedCar.id}
         >
           Update
         </button>

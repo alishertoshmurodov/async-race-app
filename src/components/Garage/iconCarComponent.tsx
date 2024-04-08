@@ -6,7 +6,7 @@ const IconCarComponent: React.FC<IconCarComponentProps> = ({ color }) => {
   return (
     <>
       <svg
-        enable-background="new 0 0 1000 600"
+        enableBackground="new 0 0 1000 600"
         height="70"
         id="Shape_1_5_"
         overflow="visible"
