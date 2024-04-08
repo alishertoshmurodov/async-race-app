@@ -6,6 +6,7 @@ import IconCarComponent from "./iconCarComponent";
 import { useState } from "react";
 import CreateCar from "./createCar";
 import UpdateCar from "./updateCar";
+import GenerateCars from "./generateCars";
 
 const RaceReset = () => {
   return (
@@ -22,11 +23,14 @@ const RaceReset = () => {
   );
 };
 
-const GenerateCars = () => {
-  return <button className="button order-4">Generate Cars</button>;
-};
-
 function Garage({ garage, getGarage }: any) {
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 7;
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const totalPageCount = Math.ceil(garage.length / itemsPerPage);
+
   const [deleteResult, setDeleteResult] = useState(null);
   const [selectedCar, setSelectedCar] = useState(false);
 
@@ -36,7 +40,6 @@ function Garage({ garage, getGarage }: any) {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
-          // Add any additional headers if needed
         },
         // Add any request body if required for DELETE request
         // body: JSON.stringify({ /* your request body */ }),
@@ -63,9 +66,9 @@ function Garage({ garage, getGarage }: any) {
     return (
       <li key={item.id}>
         <div className="flex">
-          <div className="grid grid-cols-2 gap-x-4 gap-y-2 w-auto py-4 justify-items-center">
+          <div className="grid grid-cols-2 gap-x gap-y-2 w-auto py-4 justify-items-center">
             <button
-              className={`button font-medium order-1 transition duration-300 ease-in-out ${
+              className={`button text-sm !py-1 !px-2 font-medium order-1 transition duration-300 ease-in-out ${
                 selectedCar === item.id ? "bg-gray-900 text-white" : ""
               }`}
               onClick={() => handleSelect(item.id)}
@@ -73,13 +76,17 @@ function Garage({ garage, getGarage }: any) {
               Select
             </button>
             <button
-              className="button font-medium order-3"
+              className="button text-sm !py-1 !px-2 font-medium order-3"
               onClick={() => handleDelete(item.id)}
             >
               Remove
             </button>
-            <button className="button font-medium order-2">A</button>
-            <button className="button font-medium order-4">B</button>
+            <button className="button text-sm !py-1 !px-2 font-medium order-2">
+              A
+            </button>
+            <button className="button text-sm !py-1 !px-2 font-medium order-4">
+              B
+            </button>
           </div>
           <div className="flex w-full border-y-2 border-gray-700 items-center justify-start relative">
             <div className="absolute top-2 right-2">
@@ -92,6 +99,34 @@ function Garage({ garage, getGarage }: any) {
     );
   });
 
+  const handlePageChange = (page: any) => {
+    if (page > 0 && page <= totalPageCount) {
+      setCurrentPage(page);
+    }
+  };
+
+  const PaginationNav = () => {
+    return (
+      <div className="my-3 max-w-6xl mx-auto flex gap-x-4 items-center">
+        <button
+          onClick={() => handlePageChange(currentPage - 1)}
+          className="text-xl hover:bg-gray-800 hover:text-white hover:border-white py-1 px-3 rounded-md border"
+        >
+          Prev
+        </button>
+        <span className="text-xl border text-white bg-gray-800 size-10 aspect-square grid place-items-center rounded-md ">
+          {currentPage}
+        </span>
+        <button
+          onClick={() => handlePageChange(currentPage + 1)}
+          className="text-xl hover:bg-gray-800 hover:text-white hover:border-white py-1 px-3 rounded-md border"
+        >
+          Next
+        </button>
+      </div>
+    );
+  };
+
   return (
     <section className="garage">
       <div className="grid grid-cols-1 grid-rows-4 md:grid-rows-2 md:grid-cols-2 lg:grid-cols-4 max-w-6xl mx-auto items-center  mt-10 justify-items-center gap-3">
@@ -102,11 +137,14 @@ function Garage({ garage, getGarage }: any) {
           setSelectedCar={setSelectedCar}
           getGarage={getGarage}
         />
-        <GenerateCars />
+        <GenerateCars getGarage={getGarage} />
       </div>
       <div className="garage-list max-w-6xl mx-auto">
-        <ul className="flex flex-col gap-5">{garageItemEls}</ul>
+        <ul className="flex flex-col gap-5">
+          {garageItemEls.slice(indexOfFirstItem, indexOfLastItem)}
+        </ul>
       </div>
+      {totalPageCount > 1 ? <PaginationNav /> : null}
     </section>
   );
 }
