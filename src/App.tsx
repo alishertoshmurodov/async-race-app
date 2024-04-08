@@ -35,7 +35,7 @@ function App() {
   return (
     <div className="App">
       <Header setPage={setPage} />
-      <main>
+      <main className="px-4">
         {page === "garage" ? (
           garageData && <Garage garage={garageData} getGarage={getGarageData} />
         ) : (

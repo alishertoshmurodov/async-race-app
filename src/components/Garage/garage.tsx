@@ -120,7 +120,7 @@ function Garage({ garage, getGarage }: any) {
 
   const PaginationNav = () => {
     return (
-      <div className="my-3 max-w-6xl mx-auto flex gap-x-4 items-center">
+      <div className="flex gap-x-4 items-center">
         <button
           onClick={() => handlePageChange(currentPage - 1)}
           className="text-xl hover:bg-gray-800 hover:text-white hover:border-white py-1 px-3 rounded-md border"
@@ -141,8 +141,8 @@ function Garage({ garage, getGarage }: any) {
   };
 
   return (
-    <section className="garage">
-      <div className="grid grid-cols-1 grid-rows-4 md:grid-rows-2 md:grid-cols-2 lg:grid-cols-4 max-w-6xl mx-auto items-center  mt-10 justify-items-center gap-3">
+    <section className="garage max-w-6xl mx-auto">
+      <div className="grid grid-cols-1 grid-rows-4 justify-items-center lg:justify-items-end md:grid-rows-2 lg:grid-rows-1 md:grid-cols-2 lg:grid-cols-4 items-center  mt-10 gap-3">
         <RaceReset />
         <CreateCar getGarage={getGarage} />
         <UpdateCar
@@ -152,12 +152,17 @@ function Garage({ garage, getGarage }: any) {
         />
         <GenerateCars getGarage={getGarage} />
       </div>
-      <div className="garage-list max-w-6xl mx-auto">
+      <div className="garage-list mt-4">
         <ul className="flex flex-col gap-5">
           {garageItemEls.slice(indexOfFirstItem, indexOfLastItem)}
         </ul>
       </div>
-      {totalPageCount > 1 ? <PaginationNav /> : null}
+      <div className="flex items-center justify-between px-4 my-4">
+        <div className="text-2xl font-bold uppercase tracking-widest">
+          Garage({garageItemEls.length})
+        </div>
+        {totalPageCount > 1 ? <PaginationNav /> : null}
+      </div>
     </section>
   );
 }
