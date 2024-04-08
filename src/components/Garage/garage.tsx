@@ -17,11 +17,11 @@ interface Car {
 const RaceReset = () => {
   return (
     <div className="flex gap-3 order-1 md:order-3">
-      <button className="button">
+      <button className="button bg-green-500 text-gray-50 !border-green-500 hover:!border-white hover:bg-green-400 hover:text-white transition">
         <span>Race</span>
         <IconPlay />
       </button>
-      <button className="button">
+      <button className="button bg-violet-500 text-gray-50 !border-violet-500 hover:!border-white hover:bg-violet-400 hover:text-white transition">
         <span>Reset</span>
         <IconReset />
       </button>
@@ -89,15 +89,15 @@ function Garage({ garage, getGarage, getWinnersData }: any) {
               Select
             </button>
             <button
-              className="button text-sm !py-1 !px-2 font-medium order-3"
+              className="button text-sm !py-1 !px-2 font-medium order-3 hover:bg-rose-500 hover:text-white transition ease-in-out"
               onClick={() => handleDelete(item.id)}
             >
               Remove
             </button>
-            <button className="button text-sm !py-1 !px-2 font-medium order-2">
+            <button className="button text-sm !py-1 !px-2 font-medium order-2  hover:!border-amber-500 hover:text-amber-500 transition ease-in-out">
               A
             </button>
-            <button className="button text-sm !py-1 !px-2 font-medium order-4">
+            <button className="button text-sm !py-1 !px-2 font-medium order-4 hover:!border-cyan-500 hover:text-cyan-500 transition ease-in-out">
               B
             </button>
           </div>
@@ -123,7 +123,11 @@ function Garage({ garage, getGarage, getWinnersData }: any) {
       <div className="flex gap-x-4 items-center">
         <button
           onClick={() => handlePageChange(currentPage - 1)}
-          className="text-xl hover:bg-gray-800 hover:text-white hover:border-white py-1 px-3 rounded-md border"
+          className={`text-xl py-1 px-3 rounded-md border transition ${
+            currentPage > 1
+              ? "hover:bg-gray-800 hover:text-white hover:border-white"
+              : "cursor-default opacity-50"
+          }`}
         >
           Prev
         </button>
@@ -132,7 +136,11 @@ function Garage({ garage, getGarage, getWinnersData }: any) {
         </span>
         <button
           onClick={() => handlePageChange(currentPage + 1)}
-          className="text-xl hover:bg-gray-800 hover:text-white hover:border-white py-1 px-3 rounded-md border"
+          className={`text-xl py-1 px-3 rounded-md border transition ${
+            currentPage < totalPageCount
+              ? "hover:bg-gray-800 hover:text-white hover:border-white"
+              : "cursor-default opacity-50"
+          }`}
         >
           Next
         </button>

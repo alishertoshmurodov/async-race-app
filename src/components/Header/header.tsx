@@ -14,7 +14,7 @@ function Header({ setPage, page }: any) {
           className={`nav-button ${
             page === "garage"
               ? "bg-gray-900 text-white border-gray-white cursor-default"
-              : null
+              : "hover:border-gray-900 shadow-lg transition"
           }`}
         >
           Garage
@@ -24,7 +24,7 @@ function Header({ setPage, page }: any) {
           className={`nav-button ${
             page === "winners"
               ? "bg-gray-900 text-white border-gray-white cursor-default"
-              : null
+              : "hover:border-gray-900 shadow-lg transition"
           }`}
         >
           Winners

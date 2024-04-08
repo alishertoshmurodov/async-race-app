@@ -71,8 +71,10 @@ const UpdateCar = ({
         />
         <button
           type="submit"
-          className={`button ease-in-out duration-700 transition-all ${
-            selectedCar.id ? "" : "opacity-50"
+          className={`button ease-in-out transition !border-blue-700 text-blue-700  ${
+            selectedCar.id
+              ? "hover:text-white hover:bg-blue-500 hover:!border-white"
+              : "opacity-50"
           }`}
           disabled={!selectedCar.id}
         >

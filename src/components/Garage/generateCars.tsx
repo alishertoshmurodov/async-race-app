@@ -100,7 +100,10 @@ const GenerateCars = ({ getGarage }: any) => {
   };
 
   return (
-    <button onClick={handleGenerate} className="button order-4">
+    <button
+      onClick={handleGenerate}
+      className="button order-4 hover:bg-sky-400 hover:text-white hover:!border-white transition bg-sky-500 text-white !border-sky-600"
+    >
       Generate Cars
     </button>
   );

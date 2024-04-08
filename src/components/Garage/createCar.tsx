@@ -65,7 +65,10 @@ const CreateCar = ({ getGarage }: any) => {
           className="size-10 cursor-pointer"
           onChange={handleChange}
         />
-        <button type="submit" className="button">
+        <button
+          type="submit"
+          className="button hover:bg-green-500 hover:text-white hover:!border-white transition bg-white text-green-700 !border-green-700"
+        >
           Create
         </button>
       </form>
