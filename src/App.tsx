@@ -5,14 +5,23 @@ import Winners from "./components/Winners/winners";
 import "./tailwind.css";
 import "./App.css";
 
-interface CarData {
+interface CarsData {
   name: string;
   color: string;
   id: number;
 }
 
+interface WinnerData {
+  name: string;
+  color: string;
+  id: number;
+  wins: number;
+  time: number;
+}
+
 function App() {
-  const [garageData, setGarageData] = useState<CarData[] | null>(null);
+  const [garageData, setGarageData] = useState<CarsData[] | null>(null);
+  const [winnersData, setWinnersData] = useState<WinnerData[] | null>(null);
   const [page, setPage] = useState("garage");
 
   const getGarageData = async () => {
@@ -23,6 +32,37 @@ function App() {
       }
       const jsonData = await response.json();
       setGarageData(jsonData);
+      return jsonData;
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const getWinnersData = async () => {
+    try {
+      const response = await fetch("http://127.0.0.1:3000/winners");
+      if (!response.ok) {
+        throw new Error("Failed to fetch data");
+      }
+      const winnersData = await response.json();
+      const garageData = await getGarageData();
+
+      const combinedData = garageData
+        .filter((car: CarsData) =>
+          winnersData.some((winner: WinnerData) => winner.id === car.id)
+        )
+        .map((car: CarsData) => {
+          const winner = winnersData.find(
+            (winner: WinnerData) => winner.id === car.id
+          );
+          return {
+            ...car,
+            wins: winner ? winner.wins : 0,
+            time: winner ? winner.time : 0,
+          };
+        });
+
+      setWinnersData(combinedData);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -30,17 +70,22 @@ function App() {
 
   useEffect(() => {
     getGarageData();
+    getWinnersData();
   }, []);
 
   return (
     <div className="App">
-      <Header setPage={setPage} />
+      <Header setPage={setPage} page={page} />
       <main className="px-4">
-        {page === "garage" ? (
-          garageData && <Garage garage={garageData} getGarage={getGarageData} />
-        ) : (
-          <Winners />
-        )}
+        {page === "garage"
+          ? garageData && (
+              <Garage
+                garage={garageData}
+                getGarage={getGarageData}
+                getWinnersData={getWinnersData}
+              />
+            )
+          : winnersData && <Winners winnersData={winnersData} />}
       </main>
     </div>
   );

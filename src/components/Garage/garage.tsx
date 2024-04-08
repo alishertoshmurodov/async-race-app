@@ -29,7 +29,7 @@ const RaceReset = () => {
   );
 };
 
-function Garage({ garage, getGarage }: any) {
+function Garage({ garage, getGarage, getWinnersData }: any) {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 7;
 
@@ -149,6 +149,7 @@ function Garage({ garage, getGarage }: any) {
           selectedCar={selectedCar}
           setSelectedCar={setSelectedCar}
           getGarage={getGarage}
+          getWinnersData={getWinnersData}
         />
         <GenerateCars getGarage={getGarage} />
       </div>

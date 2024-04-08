@@ -1,6 +1,11 @@
 import { useState } from "react";
 
-const UpdateCar = ({ selectedCar, setSelectedCar, getGarage }: any) => {
+const UpdateCar = ({
+  selectedCar,
+  setSelectedCar,
+  getGarage,
+  getWinnersData,
+}: any) => {
   interface Data {
     name: string;
     color: string;
@@ -37,6 +42,7 @@ const UpdateCar = ({ selectedCar, setSelectedCar, getGarage }: any) => {
       getGarage();
       setCarData({ name: "", color: "#000000" });
       setSelectedCar({ name: "", color: "#000000", id: null });
+      getWinnersData();
       console.log(updateCarData);
     } catch (error) {
       console.error("Error updating resource:", error);
