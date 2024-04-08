@@ -1,0 +1,3 @@
+.nav-button {
+  @apply border shadow-sm uppercase text-base md:text-2xl font-medium py-3 px-4 rounded tracking-wide;
+}

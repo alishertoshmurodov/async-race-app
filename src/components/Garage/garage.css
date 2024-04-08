@@ -1,0 +1,10 @@
+.garage .button {
+  @apply border border-gray-900 py-2  px-4 gap-3 flex items-center rounded-lg uppercase w-fit;
+}
+.garage .button svg {
+  @apply size-5;
+}
+
+.garage input[type="text"] {
+  @apply w-full block;
+}
