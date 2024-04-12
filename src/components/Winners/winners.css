@@ -1,0 +1,12 @@
+.winners td,
+.winners th {
+  @apply px-4 py-2 text-start;
+}
+
+.winners thead tr {
+  @apply border-y-2 border-gray-700;
+}
+
+.winners svg {
+  height: 50px;
+}

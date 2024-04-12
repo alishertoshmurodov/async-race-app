@@ -8,3 +8,35 @@
 .garage input[type="text"] {
   @apply w-full block;
 }
+
+.garage_list::after {
+  position: absolute;
+  content: "";
+  height: 100%;
+  width: 5px;
+  background-color: rgb(40, 177, 40);
+  top: 0;
+  left: calc(100% - 120px);
+}
+
+@keyframes myAnimation {
+  0% {
+    left: 0%;
+  }
+  100% {
+    left: calc(100% - 120px);
+  }
+}
+
+.car-icon {
+  position: relative;
+  bottom: -20px;
+}
+
+.car-animation {
+  animation: myAnimation linear;
+}
+
+.paused {
+  animation-play-state: paused;
+}

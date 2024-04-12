@@ -2,11 +2,11 @@ import "../../tailwind.css";
 import "./garage.css";
 import { ReactComponent as IconPlay } from "../../assets/icon-play.svg";
 import { ReactComponent as IconReset } from "../../assets/icon-reset.svg";
-import IconCarComponent from "./iconCarComponent";
 import { useState } from "react";
 import CreateCar from "./createCar";
 import UpdateCar from "./updateCar";
 import GenerateCars from "./generateCars";
+import CarElement from "./carElement";
 
 interface Car {
   name: string;
@@ -78,36 +78,12 @@ function Garage({ garage, getGarage, getWinnersData }: any) {
   const garageItemEls = garage.map((item: any) => {
     return (
       <li key={item.id}>
-        <div className="flex">
-          <div className="grid grid-cols-2 gap-x gap-y-2 w-auto py-4 justify-items-center">
-            <button
-              className={`button text-sm !py-1 !px-2 font-medium order-1 transition duration-300 ease-in-out ${
-                selectedCar.id === item.id ? "bg-gray-900 text-white" : ""
-              }`}
-              onClick={() => handleSelect(item)}
-            >
-              Select
-            </button>
-            <button
-              className="button text-sm !py-1 !px-2 font-medium order-3 hover:bg-rose-500 hover:text-white transition ease-in-out"
-              onClick={() => handleDelete(item.id)}
-            >
-              Remove
-            </button>
-            <button className="button text-sm !py-1 !px-2 font-medium order-2  hover:!border-amber-500 hover:text-amber-500 transition ease-in-out">
-              A
-            </button>
-            <button className="button text-sm !py-1 !px-2 font-medium order-4 hover:!border-cyan-500 hover:text-cyan-500 transition ease-in-out">
-              B
-            </button>
-          </div>
-          <div className="flex w-full border-y-2 border-gray-700 items-center justify-start relative">
-            <div className="absolute top-2 right-2">
-              <h2 className="text-2xl">{item.name}</h2>
-            </div>
-            <IconCarComponent color={item.color} />
-          </div>
-        </div>
+        <CarElement
+          item={item}
+          selectedCar={selectedCar}
+          handleSelect={handleSelect}
+          handleDelete={handleDelete}
+        />
       </li>
     );
   });
@@ -162,7 +138,7 @@ function Garage({ garage, getGarage, getWinnersData }: any) {
         <GenerateCars getGarage={getGarage} />
       </div>
       <div className="garage-list mt-4">
-        <ul className="flex flex-col gap-5">
+        <ul className="garage_list flex flex-col gap-5 border-r-4 border-gray-700 relative">
           {garageItemEls.slice(indexOfFirstItem, indexOfLastItem)}
         </ul>
       </div>
