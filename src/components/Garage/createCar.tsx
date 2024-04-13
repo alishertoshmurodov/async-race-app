@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const CreateCar = ({ getGarage }: any) => {
+const CreateCar = ({ getGarage, setCurrentCars, currentCars }: any) => {
   interface CarData {
     name: string;
     color: string;
@@ -37,6 +37,7 @@ const CreateCar = ({ getGarage }: any) => {
       .then((data) => {
         // Handle the response data
         console.log(data);
+
         getGarage();
         setNewCarData({ name: "", color: "#000000" });
       })
