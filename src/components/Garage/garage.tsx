@@ -1,33 +1,17 @@
 import "../../tailwind.css";
 import "./garage.css";
-import { ReactComponent as IconPlay } from "../../assets/icon-play.svg";
-import { ReactComponent as IconReset } from "../../assets/icon-reset.svg";
 import { useState } from "react";
 import CreateCar from "./createCar";
 import UpdateCar from "./updateCar";
 import GenerateCars from "./generateCars";
 import CarElement from "./carElement";
+import RaceReset from "./raceReset";
 
 interface Car {
   name: string;
   color: string;
   id: number | null;
 }
-
-const RaceReset = () => {
-  return (
-    <div className="flex gap-3 order-1 md:order-3">
-      <button className="button bg-green-500 text-gray-50 !border-green-500 hover:!border-white hover:bg-green-400 hover:text-white transition">
-        <span>Race</span>
-        <IconPlay />
-      </button>
-      <button className="button bg-violet-500 text-gray-50 !border-violet-500 hover:!border-white hover:bg-violet-400 hover:text-white transition">
-        <span>Reset</span>
-        <IconReset />
-      </button>
-    </div>
-  );
-};
 
 function Garage({ garage, getGarage, getWinnersData }: any) {
   const [currentPage, setCurrentPage] = useState(1);
@@ -80,6 +64,7 @@ function Garage({ garage, getGarage, getWinnersData }: any) {
       <li key={item.id}>
         <CarElement
           item={item}
+          garage={garage}
           selectedCar={selectedCar}
           handleSelect={handleSelect}
           handleDelete={handleDelete}
@@ -127,7 +112,7 @@ function Garage({ garage, getGarage, getWinnersData }: any) {
   return (
     <section className="garage max-w-6xl mx-auto">
       <div className="grid grid-cols-1 grid-rows-4 justify-items-center lg:justify-items-end md:grid-rows-2 lg:grid-rows-1 md:grid-cols-2 lg:grid-cols-4 items-center  mt-10 gap-3">
-        <RaceReset />
+        <RaceReset garage={garage} />
         <CreateCar getGarage={getGarage} />
         <UpdateCar
           selectedCar={selectedCar}

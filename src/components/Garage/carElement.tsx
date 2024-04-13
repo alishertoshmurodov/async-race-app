@@ -8,7 +8,8 @@ async function setEngine(
   setTime: any,
   isDriving: any,
   setIsDriving: any,
-  setFinished: any
+  setFinished: any,
+  handleReset: any
 ) {
   try {
     const patchUrl = `${url}?id=${id}&status=${status}`;
@@ -48,7 +49,9 @@ async function setEngine(
   } catch (error) {
     if (status === "drive") {
       setIsDriving("reached");
+      setFinished(true);
     }
+
     console.error("Error patching data:", error);
     throw error; // Rethrow the error for handling at higher levels
   }
@@ -74,7 +77,8 @@ function CarElement({ item, selectedCar, handleSelect, handleDelete }: any) {
         setTime,
         isDriving,
         setIsDriving,
-        setFinished
+        setFinished,
+        handleReset
       );
 
       await setEngine(
@@ -84,7 +88,8 @@ function CarElement({ item, selectedCar, handleSelect, handleDelete }: any) {
         setTime,
         isDriving,
         setIsDriving,
-        setFinished
+        setFinished,
+        handleReset
       );
       console.log("Data patched successfully");
       console.log(time);
@@ -124,9 +129,9 @@ function CarElement({ item, selectedCar, handleSelect, handleDelete }: any) {
         </button>
         <button
           onClick={() => handleSetEngine("started")}
-          disabled={isDriving === "driving"}
+          disabled={isDriving === "driving" || finished}
           className={`button text-sm !py-1 !px-2 font-medium order-2  hover:!bg-amber-500 hover:text-white transition ease-in-out ${
-            isDriving === "driving" && "bg-amber-500 text-white"
+            isDriving === "driving" || finished ? "bg-amber-500 text-white" : ""
           }`}
         >
           A
