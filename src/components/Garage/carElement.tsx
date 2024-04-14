@@ -57,7 +57,7 @@ async function setEngine(
   }
 }
 
-function CarElement({ item, selectedCar, handleSelect, handleDelete }: any) {
+function CarElement({ car, selectedCar, handleSelect, handleDelete }: any) {
   const [isDriving, setIsDriving] = useState("initial");
   const [time, setTime] = useState(0);
   const [finished, setFinished] = useState(false);
@@ -72,7 +72,7 @@ function CarElement({ item, selectedCar, handleSelect, handleDelete }: any) {
     try {
       await setEngine(
         "http://localhost:3000/engine",
-        item.id,
+        car.id,
         status,
         setTime,
         isDriving,
@@ -83,7 +83,7 @@ function CarElement({ item, selectedCar, handleSelect, handleDelete }: any) {
 
       await setEngine(
         "http://localhost:3000/engine",
-        item.id,
+        car.id,
         "drive",
         setTime,
         isDriving,
@@ -115,15 +115,15 @@ function CarElement({ item, selectedCar, handleSelect, handleDelete }: any) {
       <div className="grid grid-cols-2 gap-x gap-y-2 w-auto py-4 justify-items-center">
         <button
           className={`button text-sm !py-1 !px-2 font-medium order-1 transition duration-300 ease-in-out ${
-            selectedCar.id === item.id ? "bg-gray-900 text-white" : ""
+            selectedCar.id === car.id ? "bg-gray-900 text-white" : ""
           }`}
-          onClick={() => handleSelect(item)}
+          onClick={() => handleSelect(car)}
         >
           Select
         </button>
         <button
           className="button text-sm !py-1 !px-2 font-medium order-3 hover:bg-rose-500 hover:text-white transition ease-in-out"
-          onClick={() => handleDelete(item.id)}
+          onClick={() => handleDelete(car.id)}
         >
           Remove
         </button>
@@ -145,7 +145,7 @@ function CarElement({ item, selectedCar, handleSelect, handleDelete }: any) {
       </div>
       <div className="flex w-full border-y-2 border-gray-700 items-center justify-start relative">
         <div className="absolute top-1 left-2">
-          <h2 className="text-2xl">{item.name}</h2>
+          <h2 className="text-2xl">{car.name}</h2>
         </div>
         <div
           className={`${getClassName()} car-icon`}
@@ -157,7 +157,7 @@ function CarElement({ item, selectedCar, handleSelect, handleDelete }: any) {
                 : "unset",
           }}
         >
-          <IconCarComponent color={item.color} />
+          <IconCarComponent color={car.color} />
         </div>
       </div>
     </div>
