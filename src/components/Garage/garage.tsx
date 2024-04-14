@@ -28,17 +28,22 @@ function Garage({ garage, getGarage, getWinnersData }: any) {
     id: null,
   });
 
-  const [currentCars, setCurrentCars] = useState();
+  const [cars, setCars] = useState([]);
 
   useEffect(() => {
     // Update currentCars based on the new garage state
-    const newCurrentCars = garage
-      .slice(indexOfFirstItem, indexOfLastItem)
-      .map((car: any) => {
-        return { id: car.id, isDriving: "initial", isFinished: false, time: 0 };
-      });
-    setCurrentCars(newCurrentCars);
-  }, [garage, indexOfFirstItem, indexOfLastItem]);
+    const newCars = garage.map((car: any) => {
+      return {
+        id: car.id,
+        name: car.name,
+        color: car.color,
+        isDriving: "initial",
+        isFinished: false,
+        time: 0,
+      };
+    });
+    setCars(newCars);
+  }, [garage]);
 
   const handleDelete = async (id: any) => {
     try {
@@ -71,11 +76,11 @@ function Garage({ garage, getGarage, getWinnersData }: any) {
       : setSelectedCar(car);
   };
 
-  const garageItemEls = garage.map((item: any) => {
+  const garageItemEls = cars.map((car: any) => {
     return (
-      <li key={item.id}>
+      <li key={car.id}>
         <CarElement
-          item={item}
+          car={car}
           garage={garage}
           selectedCar={selectedCar}
           handleSelect={handleSelect}
@@ -124,12 +129,8 @@ function Garage({ garage, getGarage, getWinnersData }: any) {
   return (
     <section className="garage max-w-6xl mx-auto">
       <div className="grid grid-cols-1 grid-rows-4 justify-items-center lg:justify-items-end md:grid-rows-2 lg:grid-rows-1 md:grid-cols-2 lg:grid-cols-4 items-center  mt-10 gap-3">
-        <RaceReset currentCars={currentCars} />
-        <CreateCar
-          getGarage={getGarage}
-          setCurrentCars={setCurrentCars}
-          currentCars={currentCars}
-        />
+        <RaceReset cars={cars} />
+        <CreateCar getGarage={getGarage} setCars={setCars} cars={cars} />
         <UpdateCar
           selectedCar={selectedCar}
           setSelectedCar={setSelectedCar}
