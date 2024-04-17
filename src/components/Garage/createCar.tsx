@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const CreateCar = ({ getGarage, setCurrentCars, currentCars }: any) => {
+const CreateCar = ({ getGarage }: any) => {
   interface CarData {
     name: string;
     color: string;

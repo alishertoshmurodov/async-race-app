@@ -31,19 +31,21 @@ function Garage({ garage, getGarage, getWinnersData }: any) {
   const [cars, setCars] = useState([]);
 
   useEffect(() => {
+    if (cars.length === 0) {
+      const newCars = garage.map((car: any) => {
+        return {
+          id: car.id,
+          name: car.name,
+          color: car.color,
+          isDriving: "initial",
+          isFinished: false,
+          time: 0,
+        };
+      });
+      setCars(newCars);
+    }
     // Update currentCars based on the new garage state
-    const newCars = garage.map((car: any) => {
-      return {
-        id: car.id,
-        name: car.name,
-        color: car.color,
-        isDriving: "initial",
-        isFinished: false,
-        time: 0,
-      };
-    });
-    setCars(newCars);
-  }, [garage]);
+  }, [garage, cars]);
 
   const handleDelete = async (id: any) => {
     try {
@@ -81,7 +83,8 @@ function Garage({ garage, getGarage, getWinnersData }: any) {
       <li key={car.id}>
         <CarElement
           car={car}
-          garage={garage}
+          cars={cars}
+          setCars={setCars}
           selectedCar={selectedCar}
           handleSelect={handleSelect}
           handleDelete={handleDelete}

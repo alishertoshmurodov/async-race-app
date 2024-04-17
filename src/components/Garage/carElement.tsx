@@ -1,18 +1,17 @@
-import { useState } from "react";
 import IconCarComponent from "./iconCarComponent";
 
 async function setEngine(
   url: string,
-  id: number,
+  carIndex: number,
+  updatedCars: any,
   status: string,
-  setTime: any,
-  isDriving: any,
-  setIsDriving: any,
-  setFinished: any,
-  handleReset: any
+  setCars: any
 ) {
+  const newCars = [...updatedCars];
+  const updatedCar = { ...newCars[carIndex] };
+
   try {
-    const patchUrl = `${url}?id=${id}&status=${status}`;
+    const patchUrl = `${url}?id=${updatedCars[carIndex].id}&status=${status}`;
     const data = { status }; // Assuming status is the key in the patch data
 
     const response = await fetch(patchUrl, {
@@ -32,67 +31,82 @@ async function setEngine(
 
     const result = await response.json();
 
+    // Create a copy of the cars array to modify
+    const getTime = () => {
+      if (result.velocity > 0) {
+        return result.distance / result.velocity;
+      }
+    };
+    // Update the car object based on the status
     if (status === "started") {
-      setTime(result.distance / result.velocity);
-      setIsDriving("driving");
+      updatedCar.isDriving = "driving";
+      updatedCar.time = getTime();
+    } else if (status === "drive") {
+      updatedCar.isDriving = "reached";
+      updatedCar.isFinished = true;
     }
 
-    if (isDriving === "reached") {
-      setIsDriving("initial");
-    }
-    if (status === "drive") {
-      setIsDriving("reached");
-      setFinished(true);
-    }
-
-    return response;
+    newCars[carIndex] = updatedCar;
+    setCars(newCars);
+    return newCars;
   } catch (error) {
     if (status === "drive") {
-      setIsDriving("reached");
-      setFinished(true);
+      updatedCar.isDriving = "stopped";
+      updatedCar.isFinished = true;
     }
+    newCars[carIndex] = updatedCar;
+    setCars(() => {
+      newCars[carIndex] = updatedCar;
+      return newCars;
+    });
 
     console.error("Error patching data:", error);
     throw error; // Rethrow the error for handling at higher levels
   }
 }
 
-function CarElement({ car, selectedCar, handleSelect, handleDelete }: any) {
-  const [isDriving, setIsDriving] = useState("initial");
-  const [time, setTime] = useState(0);
-  const [finished, setFinished] = useState(false);
+function CarElement({
+  car,
+  cars,
+  setCars,
+  selectedCar,
+  handleSelect,
+  handleDelete,
+}: any) {
+  const carIndex = cars.findIndex((carItem: any) => carItem.id === car.id);
 
   const handleReset = () => {
-    setIsDriving("initial");
-    setFinished(false);
-    setTime(0);
+    let newCars = [...cars];
+    newCars[carIndex] = {
+      ...newCars[carIndex],
+      isDriving: "initial",
+      isFinished: false,
+      time: 0,
+    };
+    setCars(newCars);
   };
 
-  async function handleSetEngine(status: string) {
+  async function handleSetEngine() {
+    let updatedCars = [...cars];
     try {
-      await setEngine(
+      updatedCars = await setEngine(
         "http://localhost:3000/engine",
-        car.id,
-        status,
-        setTime,
-        isDriving,
-        setIsDriving,
-        setFinished,
-        handleReset
+        carIndex,
+        updatedCars,
+        "started",
+        setCars
       );
 
       await setEngine(
         "http://localhost:3000/engine",
-        car.id,
+        carIndex,
+        updatedCars,
         "drive",
-        setTime,
-        isDriving,
-        setIsDriving,
-        setFinished,
-        handleReset
+        setCars
       );
+
       console.log("Data patched successfully");
-      console.log(time);
+
       // Optionally, reset form fields or update state upon successful patching
     } catch (error) {
       console.error("Error patching data:", error);
@@ -101,9 +115,9 @@ function CarElement({ car, selectedCar, handleSelect, handleDelete }: any) {
   }
 
   const getClassName = () => {
-    if (isDriving === "initial") {
+    if (car.isDriving === "initial") {
       return "";
-    } else if (isDriving === "driving") {
+    } else if (car.isDriving === "driving") {
       return "car-animation";
     } else {
       return "car-animation paused";
@@ -128,10 +142,12 @@ function CarElement({ car, selectedCar, handleSelect, handleDelete }: any) {
           Remove
         </button>
         <button
-          onClick={() => handleSetEngine("started")}
-          disabled={isDriving === "driving" || finished}
+          onClick={() => handleSetEngine()}
+          disabled={car.isDriving === "driving" || car.isFinished}
           className={`button text-sm !py-1 !px-2 font-medium order-2  hover:!bg-amber-500 hover:text-white transition ease-in-out ${
-            isDriving === "driving" || finished ? "bg-amber-500 text-white" : ""
+            car.isDriving === "driving" || car.isFinished
+              ? "bg-amber-500 text-white"
+              : ""
           }`}
         >
           A
@@ -150,9 +166,9 @@ function CarElement({ car, selectedCar, handleSelect, handleDelete }: any) {
         <div
           className={`${getClassName()} car-icon`}
           style={{
-            animationDuration: `${String(time)}ms`,
+            animationDuration: `${String(car.time)}ms`,
             left:
-              finished && isDriving !== "initial"
+              car.isFinished && car.isDriving !== "initial"
                 ? "calc(100% - 120px)"
                 : "unset",
           }}
