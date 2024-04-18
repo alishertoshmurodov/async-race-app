@@ -114,16 +114,6 @@ function CarElement({
     }
   }
 
-  const getClassName = () => {
-    if (car.isDriving === "initial") {
-      return "";
-    } else if (car.isDriving === "driving") {
-      return "car-animation";
-    } else {
-      return "car-animation paused";
-    }
-  };
-
   return (
     <div className="flex">
       <div className="grid grid-cols-2 gap-x gap-y-2 w-auto py-4 justify-items-center">
@@ -164,13 +154,19 @@ function CarElement({
           <h2 className="text-2xl">{car.name}</h2>
         </div>
         <div
-          className={`${getClassName()} car-icon`}
+          className={`car driving`}
           style={{
+            animationPlayState:
+              car.isDriving === "initial" || car.isDriving === "stopped"
+                ? "paused"
+                : "running",
+            animationName:
+              car.isDriving === "initial" ? "none" : "driveAnimation",
             animationDuration: `${String(car.time)}ms`,
             left:
               car.isFinished && car.isDriving !== "initial"
                 ? "calc(100% - 120px)"
-                : "unset",
+                : "0",
           }}
         >
           <IconCarComponent color={car.color} />

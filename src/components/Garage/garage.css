@@ -19,24 +19,22 @@
   left: calc(100% - 120px);
 }
 
-@keyframes myAnimation {
-  0% {
-    left: 0%;
+@keyframes driveAnimation {
+  from {
+    left: 0;
   }
-  100% {
+  to {
     left: calc(100% - 120px);
   }
 }
 
-.car-icon {
-  position: relative;
-  bottom: -20px;
+.car {
+  position: absolute;
+  left: 0;
+  top: 30px;
+  transition: left 0.5s;
 }
 
-.car-animation {
-  animation: myAnimation linear;
-}
-
-.paused {
-  animation-play-state: paused;
+.driving {
+  animation: driveAnimation linear forwards;
 }

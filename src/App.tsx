@@ -9,6 +9,9 @@ interface CarsData {
   name: string;
   color: string;
   id: number;
+  isDriving: string;
+  isFinished: boolean;
+  time: number;
 }
 
 interface WinnerData {
@@ -31,8 +34,19 @@ function App() {
         throw new Error("Failed to fetch data");
       }
       const jsonData = await response.json();
-      setGarageData(jsonData);
-      return jsonData;
+      const carsData = jsonData.map((car: any) => {
+        const carData = {
+          name: car.name,
+          color: car.color,
+          id: car.id,
+          isDriving: "initial",
+          isFinished: false,
+          time: 0,
+        };
+        return carData;
+      });
+      setGarageData(carsData);
+      return carsData;
     } catch (error) {
       console.error("Error fetching data:", error);
     }

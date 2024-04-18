@@ -31,21 +31,18 @@ function Garage({ garage, getGarage, getWinnersData }: any) {
   const [cars, setCars] = useState([]);
 
   useEffect(() => {
-    if (cars.length === 0) {
-      const newCars = garage.map((car: any) => {
-        return {
-          id: car.id,
-          name: car.name,
-          color: car.color,
-          isDriving: "initial",
-          isFinished: false,
-          time: 0,
-        };
-      });
-      setCars(newCars);
-    }
-    // Update currentCars based on the new garage state
-  }, [garage, cars]);
+    const newCars = garage.map((car: any) => {
+      return {
+        id: car.id,
+        name: car.name,
+        color: car.color,
+        isDriving: car.isDriving,
+        isFinished: car.isFinished,
+        time: car.time,
+      };
+    });
+    setCars(newCars);
+  }, [garage]);
 
   const handleDelete = async (id: any) => {
     try {
@@ -132,7 +129,12 @@ function Garage({ garage, getGarage, getWinnersData }: any) {
   return (
     <section className="garage max-w-6xl mx-auto">
       <div className="grid grid-cols-1 grid-rows-4 justify-items-center lg:justify-items-end md:grid-rows-2 lg:grid-rows-1 md:grid-cols-2 lg:grid-cols-4 items-center  mt-10 gap-3">
-        <RaceReset cars={cars} />
+        <RaceReset
+          cars={cars}
+          setCars={setCars}
+          indexOfFirstItem={indexOfFirstItem}
+          indexOfLastItem={indexOfLastItem}
+        />
         <CreateCar getGarage={getGarage} setCars={setCars} cars={cars} />
         <UpdateCar
           selectedCar={selectedCar}
