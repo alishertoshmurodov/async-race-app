@@ -1,6 +1,15 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ReactComponent as IconPlay } from "../../assets/icon-play.svg";
 import { ReactComponent as IconReset } from "../../assets/icon-reset.svg";
+
+interface Car {
+  color: string;
+  id: number;
+  isDriving: string;
+  isFinished: boolean;
+  name: string;
+  time: number;
+}
 
 async function setEngine(
   url: string,
@@ -68,8 +77,52 @@ async function setEngine(
   }
 }
 
-function RaceReset({ cars, indexOfLastItem, indexOfFirstItem, setCars }: any) {
+async function handleWinner(winner: Car | null) {
+  if (winner) {
+    const winnerData = {
+      id: winner.id,
+      wins: 1,
+      time: winner.time,
+    };
+
+    const url = "http://127.0.0.1:3000/winners";
+    fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(winnerData),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json(); // Parse the JSON-encoded response body
+      })
+      .then((data) => {
+        // Handle the response data
+        console.log(data);
+      })
+      .catch((error) => {
+        // Handle errors
+        console.error("There was a problem with your fetch operation:", error);
+      });
+  } else {
+    throw new Error("Winner cannot be empty to execute this funtion");
+  }
+}
+
+function RaceReset({
+  cars,
+  indexOfLastItem,
+  indexOfFirstItem,
+  setCars,
+  setWinnersData,
+  winnersData,
+}: any) {
   const [raceStatus, setRaceStatus] = useState("start");
+  const [winner, setWinner] = useState<Car | null>(null);
+  const [showWinner, setShowWinner] = useState(false);
 
   async function updateCarEngine(
     url: string,
@@ -88,13 +141,42 @@ function RaceReset({ cars, indexOfLastItem, indexOfFirstItem, setCars }: any) {
     }
   }
 
+  useEffect(() => {
+    const carsWithTimes = cars.filter(
+      (car: any) =>
+        car.isFinished && car.time != null && car.isDriving === "reached"
+    );
+    if (carsWithTimes.length > 0) {
+      const winnerCar = carsWithTimes.reduce((prev: any, current: any) =>
+        prev.time < current.time ? prev : current
+      );
+      setWinner(winnerCar);
+    }
+  }, [cars]);
+
+  useEffect(() => {
+    if (raceStatus === "ended" && winner) {
+      handleWinner(winner);
+      setWinnersData([
+        ...winnersData,
+        {
+          id: winner.id,
+          color: winner.color,
+          name: winner.name,
+          time: winner.time,
+          wins: 1,
+        },
+      ]);
+    }
+  }, [raceStatus, winner]);
+
   async function handleSetEngine() {
     setRaceStatus("racing");
     const carPromises = cars
       .slice(indexOfFirstItem, indexOfLastItem)
-      .map((index: number) =>
+      .map((car: any, index: number) =>
         updateCarEngine(
-          "http://localhost:3000/engine",
+          "http://127.0.0.1:3000/engine",
           indexOfFirstItem + index,
           [...cars],
           setCars
@@ -102,6 +184,7 @@ function RaceReset({ cars, indexOfLastItem, indexOfFirstItem, setCars }: any) {
       );
 
     const results = await Promise.allSettled(carPromises);
+
     results.forEach((result, index) => {
       if (result.status === "fulfilled") {
         console.log(`Car ${index}: Updated successfully`);
@@ -109,39 +192,78 @@ function RaceReset({ cars, indexOfLastItem, indexOfFirstItem, setCars }: any) {
         console.error(`Car ${index}: Failed to update`, result.reason);
       }
     });
+    setShowWinner(true);
     setRaceStatus("ended");
   }
 
   function handleReset() {
+    setRaceStatus("start");
+    setShowWinner(false);
     const updatedCars = [...cars];
-    for (let i = indexOfFirstItem; i < indexOfLastItem; i++) {
-      updatedCars[i].isDriving = "initial";
-      updatedCars[i].isFinished = false;
-      updatedCars[i].time = 0;
-    }
+
+    if (updatedCars.length < 7) {
+      for (let i = 0; i < updatedCars.length; i++) {
+        updatedCars[i].isDriving = "initial";
+        updatedCars[i].isFinished = false;
+        updatedCars[i].time = 0;
+      }
+    } else
+      for (let i = indexOfFirstItem; i < indexOfLastItem; i++) {
+        updatedCars[i].isDriving = "initial";
+        updatedCars[i].isFinished = false;
+        updatedCars[i].time = 0;
+      }
     setCars(updatedCars);
   }
 
+  useEffect(() => {
+    setShowWinner(false);
+  }, [indexOfFirstItem]);
+
   return (
-    <div className="flex gap-3 order-1 md:order-3">
-      <button
-        onClick={handleSetEngine}
-        disabled={raceStatus === "racing" || raceStatus === "ended"}
-        className={`button bg-green-500 text-gray-50 !border-green-500 hover:!border-white hover:bg-green-400 hover:text-white transition ${
-          raceStatus !== "start" && "opacity-50"
-        }`}
-      >
-        <span>Race</span>
-        <IconPlay />
-      </button>
-      <button
-        onClick={handleReset}
-        className="button bg-violet-500 text-gray-50 !border-violet-500 hover:!border-white hover:bg-violet-400 hover:text-white transition"
-      >
-        <span>Reset</span>
-        <IconReset />
-      </button>
-    </div>
+    <>
+      {showWinner ? (
+        <div className="winner-notice text-center border-1 bg-gray-800 z-10 rounded-lg p-10 text-white">
+          <button
+            className="absolute top-2 right-2"
+            onClick={() => setShowWinner(false)}
+          >
+            ❌
+          </button>
+          <div className="flex flex-col gap-4">
+            <div className="text-4xl">🏁We Have a Winner!🥇</div>
+            {winner && (
+              <div>
+                <p className="text-3xl font-medium mb-2">{winner.name}</p>
+                <p className="text-2xl font-bold">
+                  {winner.time.toFixed(2)} ms
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+      ) : null}
+
+      <div className="flex gap-3 order-1 md:order-3">
+        <button
+          onClick={handleSetEngine}
+          disabled={raceStatus === "racing" || raceStatus === "ended"}
+          className={`button bg-green-500 text-gray-50 !border-green-500 hover:!border-white hover:bg-green-400 hover:text-white transition ${
+            raceStatus !== "start" && "opacity-50"
+          }`}
+        >
+          <span>Race</span>
+          <IconPlay />
+        </button>
+        <button
+          onClick={handleReset}
+          className="button bg-violet-500 text-gray-50 !border-violet-500 hover:!border-white hover:bg-violet-400 hover:text-white transition"
+        >
+          <span>Reset</span>
+          <IconReset />
+        </button>
+      </div>
+    </>
   );
 }
 

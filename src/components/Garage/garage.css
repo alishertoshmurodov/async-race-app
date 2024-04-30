@@ -19,14 +19,35 @@
   left: calc(100% - 120px);
 }
 
-@keyframes driveAnimation {
-  from {
-    left: 0;
+/* Winners Notice Animation */
+
+.winner-notice {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  -webkit-animation: fade-in 0.6s cubic-bezier(0.39, 0.575, 0.565, 1) both;
+  animation: fade-in 0.6s cubic-bezier(0.39, 0.575, 0.565, 1) both;
+}
+
+@-webkit-keyframes fade-in {
+  0% {
+    opacity: 0;
   }
-  to {
-    left: calc(100% - 120px);
+  100% {
+    opacity: 1;
   }
 }
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* Car Animation */
 
 .car {
   position: absolute;
@@ -37,4 +58,13 @@
 
 .driving {
   animation: driveAnimation linear forwards;
+}
+
+@keyframes driveAnimation {
+  from {
+    left: 0;
+  }
+  to {
+    left: calc(100% - 120px);
+  }
 }

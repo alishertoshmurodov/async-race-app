@@ -1,6 +1,6 @@
 import "../../tailwind.css";
 import "./garage.css";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import CreateCar from "./createCar";
 import UpdateCar from "./updateCar";
 import GenerateCars from "./generateCars";
@@ -13,13 +13,20 @@ interface Car {
   id: number | null;
 }
 
-function Garage({ garage, getGarage, getWinnersData }: any) {
+function Garage({
+  cars,
+  setCars,
+  getGarage,
+  getWinnersData,
+  winnersData,
+  setWinnersData,
+}: any) {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 7;
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const totalPageCount = Math.ceil(garage.length / itemsPerPage);
+  const totalPageCount = Math.ceil(cars.length / itemsPerPage);
 
   const [deleteResult, setDeleteResult] = useState(null);
   const [selectedCar, setSelectedCar] = useState<Car>({
@@ -27,22 +34,6 @@ function Garage({ garage, getGarage, getWinnersData }: any) {
     color: "",
     id: null,
   });
-
-  const [cars, setCars] = useState([]);
-
-  useEffect(() => {
-    const newCars = garage.map((car: any) => {
-      return {
-        id: car.id,
-        name: car.name,
-        color: car.color,
-        isDriving: car.isDriving,
-        isFinished: car.isFinished,
-        time: car.time,
-      };
-    });
-    setCars(newCars);
-  }, [garage]);
 
   const handleDelete = async (id: any) => {
     try {
@@ -75,20 +66,22 @@ function Garage({ garage, getGarage, getWinnersData }: any) {
       : setSelectedCar(car);
   };
 
-  const garageItemEls = cars.map((car: any) => {
-    return (
-      <li key={car.id}>
-        <CarElement
-          car={car}
-          cars={cars}
-          setCars={setCars}
-          selectedCar={selectedCar}
-          handleSelect={handleSelect}
-          handleDelete={handleDelete}
-        />
-      </li>
-    );
-  });
+  const garageItemEls = cars
+    ? cars.map((car: any) => {
+        return (
+          <li key={car.id}>
+            <CarElement
+              car={car}
+              cars={cars}
+              setCars={setCars}
+              selectedCar={selectedCar}
+              handleSelect={handleSelect}
+              handleDelete={handleDelete}
+            />
+          </li>
+        );
+      })
+    : [];
 
   const handlePageChange = (page: any) => {
     if (page > 0 && page <= totalPageCount) {
@@ -134,6 +127,8 @@ function Garage({ garage, getGarage, getWinnersData }: any) {
           setCars={setCars}
           indexOfFirstItem={indexOfFirstItem}
           indexOfLastItem={indexOfLastItem}
+          winnersData={winnersData}
+          setWinnersData={setWinnersData}
         />
         <CreateCar getGarage={getGarage} setCars={setCars} cars={cars} />
         <UpdateCar
@@ -146,7 +141,9 @@ function Garage({ garage, getGarage, getWinnersData }: any) {
       </div>
       <div className="garage-list mt-4">
         <ul className="garage_list flex flex-col gap-5 border-r-4 border-gray-700 relative">
-          {garageItemEls.slice(indexOfFirstItem, indexOfLastItem)}
+          {indexOfFirstItem < garageItemEls.length
+            ? garageItemEls.slice(indexOfFirstItem, indexOfLastItem)
+            : []}
         </ul>
       </div>
       <div className="flex items-center justify-between px-4 my-4">

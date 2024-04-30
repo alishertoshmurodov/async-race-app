@@ -94,9 +94,12 @@ function App() {
         {page === "garage"
           ? garageData && (
               <Garage
-                garage={garageData}
+                cars={garageData}
+                setCars={setGarageData}
                 getGarage={getGarageData}
                 getWinnersData={getWinnersData}
+                winnersData={winnersData}
+                setWinnersData={setWinnersData}
               />
             )
           : winnersData && <Winners winnersData={winnersData} />}
