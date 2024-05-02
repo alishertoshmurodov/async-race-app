@@ -62,24 +62,7 @@ const GenerateCars = ({ getGarage }: any) => {
           name: generateRandomName(),
           color: generateRandomColor(),
         }),
-      })
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error("Network response was not ok");
-          }
-          return response.json(); // Parse the JSON-encoded response body
-        })
-        .then((data) => {
-          // Handle the response data
-          console.log("Request successful:", data);
-        })
-        .catch((error) => {
-          // Handle errors
-          console.error(
-            "There was a problem with your fetch operation:",
-            error
-          );
-        });
+      });
 
       requestPromises.push(requestPromise);
     }

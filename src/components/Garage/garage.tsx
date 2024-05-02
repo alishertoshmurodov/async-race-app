@@ -28,7 +28,6 @@ function Garage({
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const totalPageCount = Math.ceil(cars.length / itemsPerPage);
 
-  const [deleteResult, setDeleteResult] = useState(null);
   const [selectedCar, setSelectedCar] = useState<Car>({
     name: "",
     color: "",
@@ -37,26 +36,44 @@ function Garage({
 
   const handleDelete = async (id: any) => {
     try {
-      const response = await fetch(`http://127.0.0.1:3000/garage/${id}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        // Add any request body if required for DELETE request
-        // body: JSON.stringify({ /* your request body */ }),
+      // Define URLs for garage and winners
+      const garageUrl = `http://127.0.0.1:3000/garage/${id}`;
+      const winnersUrl = `http://127.0.0.1:3000/winners/${id}`;
+
+      // Send DELETE requests to both URLs using Promise.allSettled
+      const results = await Promise.allSettled([
+        fetch(garageUrl, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }),
+        fetch(winnersUrl, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }),
+      ]);
+
+      // Process results
+      results.forEach((result: any, index) => {
+        if (result.status === "fulfilled" && result.value.ok) {
+          console.log(
+            `Deletion successful for ${index === 0 ? "garage" : "winners"}`
+          );
+        } else if (result.status === "rejected" || !result.value.ok) {
+          console.error(
+            `Deletion failed for ${index === 0 ? "garage" : "winners"}`,
+            result.reason || result.value.statusText
+          );
+        }
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to delete resource");
-      }
-
-      const data = await response.json();
-      setDeleteResult(data); // Update state with response data
-      console.log(deleteResult);
+      // Optionally, fetch updated data or handle UI updates
       getGarage();
     } catch (error) {
-      console.error("Error deleting resource:", error);
-      // Handle error
+      console.error("Error handling delete operation:", error);
     }
   };
 
@@ -129,6 +146,7 @@ function Garage({
           indexOfLastItem={indexOfLastItem}
           winnersData={winnersData}
           setWinnersData={setWinnersData}
+          getGarage={getGarage}
         />
         <CreateCar getGarage={getGarage} setCars={setCars} cars={cars} />
         <UpdateCar

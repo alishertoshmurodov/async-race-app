@@ -34,7 +34,7 @@ async function setEngine(
     // Create a copy of the cars array to modify
     const getTime = () => {
       if (result.velocity > 0) {
-        return result.distance / result.velocity;
+        return result.distance / result.velocity / 1000;
       }
     };
     // Update the car object based on the status
@@ -162,7 +162,7 @@ function CarElement({
                 : "running",
             animationName:
               car.isDriving === "initial" ? "none" : "driveAnimation",
-            animationDuration: `${String(car.time)}ms`,
+            animationDuration: `${String(car.time)}s`,
             left:
               car.isFinished && car.isDriving !== "initial"
                 ? "calc(100% - 120px)"

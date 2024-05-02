@@ -9,6 +9,7 @@ interface Car {
   isFinished: boolean;
   name: string;
   time: number;
+  wins: number;
 }
 
 async function setEngine(
@@ -45,7 +46,9 @@ async function setEngine(
       const updatedCar = { ...newCars[carIndex] };
 
       const getTime = () =>
-        result.velocity > 0 ? result.distance / result.velocity : undefined;
+        result.velocity > 0
+          ? result.distance / result.velocity / 1000
+          : undefined;
 
       // Ensure the time value is only set during the "started" status and preserved during the "drive" status
       if (status === "started") {
@@ -79,19 +82,32 @@ async function setEngine(
 
 async function handleWinner(winner: Car | null) {
   if (winner) {
-    const winnerData = {
-      id: winner.id,
-      wins: 1,
-      time: winner.time,
+    const method = winner.wins > 0 ? "PUT" : "POST";
+
+    const winnerData = (method: string) => {
+      if (method === "POST") {
+        return {
+          id: winner.id,
+          wins: ++winner.wins,
+          time: winner.time,
+        };
+      } else {
+        return {
+          wins: ++winner.wins,
+          time: winner.time,
+        };
+      }
     };
 
-    const url = "http://127.0.0.1:3000/winners";
+    const url = `http://127.0.0.1:3000/winners${
+      method === "PUT" ? `/${winner.id}` : ""
+    }`;
     fetch(url, {
-      method: "POST",
+      method: method,
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(winnerData),
+      body: JSON.stringify(winnerData(method)),
     })
       .then((response) => {
         if (!response.ok) {
@@ -100,7 +116,6 @@ async function handleWinner(winner: Car | null) {
         return response.json(); // Parse the JSON-encoded response body
       })
       .then((data) => {
-        // Handle the response data
         console.log(data);
       })
       .catch((error) => {
@@ -112,14 +127,7 @@ async function handleWinner(winner: Car | null) {
   }
 }
 
-function RaceReset({
-  cars,
-  indexOfLastItem,
-  indexOfFirstItem,
-  setCars,
-  setWinnersData,
-  winnersData,
-}: any) {
+function RaceReset({ cars, indexOfLastItem, indexOfFirstItem, setCars }: any) {
   const [raceStatus, setRaceStatus] = useState("start");
   const [winner, setWinner] = useState<Car | null>(null);
   const [showWinner, setShowWinner] = useState(false);
@@ -157,16 +165,6 @@ function RaceReset({
   useEffect(() => {
     if (raceStatus === "ended" && winner) {
       handleWinner(winner);
-      setWinnersData([
-        ...winnersData,
-        {
-          id: winner.id,
-          color: winner.color,
-          name: winner.name,
-          time: winner.time,
-          wins: 1,
-        },
-      ]);
     }
   }, [raceStatus, winner]);
 
@@ -231,13 +229,13 @@ function RaceReset({
             ❌
           </button>
           <div className="flex flex-col gap-4">
-            <div className="text-4xl">🏁We Have a Winner!🥇</div>
+            <div className="text-4xl">
+              {winner ? "🏁We Have a Winner!🥇" : "No Winner This Time"}
+            </div>
             {winner && (
               <div>
                 <p className="text-3xl font-medium mb-2">{winner.name}</p>
-                <p className="text-2xl font-bold">
-                  {winner.time.toFixed(2)} ms
-                </p>
+                <p className="text-2xl font-bold">{winner.time.toFixed(2)} s</p>
               </div>
             )}
           </div>
