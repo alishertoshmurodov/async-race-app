@@ -136,12 +136,8 @@ function Garage({ getGarage }: any) {
           indexOfFirstItem={indexOfFirstItem}
           indexOfLastItem={indexOfLastItem}
         />
-        <CreateCar getGarage={getGarage} setCars={setCars} cars={cars} />
-        <UpdateCar
-          selectedCar={selectedCar}
-          setSelectedCar={setSelectedCar}
-          getGarage={getGarage}
-        />
+        <CreateCar />
+        <UpdateCar selectedCar={selectedCar} setSelectedCar={setSelectedCar} />
         <GenerateCars getGarage={getGarage} />
       </div>
       <div className="garage-list mt-4">

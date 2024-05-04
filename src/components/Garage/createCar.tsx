@@ -1,7 +1,8 @@
 import { useStateContext } from "../../StateContext";
 
-const CreateCar = ({ getGarage }: any) => {
+const CreateCar = () => {
   const { newCarData, setNewCarData } = useStateContext();
+  const { cars, setCars } = useStateContext();
 
   const handleChange = (e: any) => {
     setNewCarData({
@@ -27,10 +28,22 @@ const CreateCar = ({ getGarage }: any) => {
         return response.json(); // Parse the JSON-encoded response body
       })
       .then((data) => {
-        // Handle the response data
-        console.log(data);
+        const newCars = [...cars];
 
-        getGarage();
+        const newCar = {
+          name: data.name,
+          color: data.color,
+          id: data.id,
+          isDriving: "initial",
+          isFinished: false,
+          time: 0,
+          wins: 0,
+        };
+
+        newCars.push(newCar);
+
+        setCars(newCars);
+
         setNewCarData({ name: "", color: "#000000" });
       })
       .catch((error) => {

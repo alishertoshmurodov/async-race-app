@@ -6,7 +6,7 @@ interface Data {
   color: string;
 }
 
-const UpdateCar = ({ selectedCar, setSelectedCar, getGarage }: any) => {
+const UpdateCar = ({ selectedCar, setSelectedCar }: any) => {
   const { cars, setCars } = useStateContext();
 
   const [updateCarData, setUpdateCarData] = useState(null);
