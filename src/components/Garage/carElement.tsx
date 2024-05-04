@@ -1,3 +1,4 @@
+import { useStateContext } from "../../StateContext";
 import IconCarComponent from "./iconCarComponent";
 
 async function setEngine(
@@ -65,14 +66,8 @@ async function setEngine(
   }
 }
 
-function CarElement({
-  car,
-  cars,
-  setCars,
-  selectedCar,
-  handleSelect,
-  handleDelete,
-}: any) {
+function CarElement({ car, selectedCar, handleSelect, handleDelete }: any) {
+  const { cars, setCars } = useStateContext();
   const carIndex = cars.findIndex((carItem: any) => carItem.id === car.id);
 
   const handleReset = () => {

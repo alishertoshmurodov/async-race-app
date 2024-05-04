@@ -1,19 +1,11 @@
-import { useState } from "react";
+import { useStateContext } from "../../StateContext";
 
 const CreateCar = ({ getGarage }: any) => {
-  interface CarData {
-    name: string;
-    color: string;
-  }
-
-  const [NewCarData, setNewCarData] = useState<CarData>({
-    name: "",
-    color: "#000000",
-  });
+  const { newCarData, setNewCarData } = useStateContext();
 
   const handleChange = (e: any) => {
     setNewCarData({
-      ...NewCarData,
+      ...newCarData,
       [e.target.name]: e.target.value,
     });
   };
@@ -26,7 +18,7 @@ const CreateCar = ({ getGarage }: any) => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(NewCarData),
+      body: JSON.stringify(newCarData),
     })
       .then((response) => {
         if (!response.ok) {
@@ -53,7 +45,7 @@ const CreateCar = ({ getGarage }: any) => {
         <input
           type="text"
           name="name"
-          value={NewCarData.name}
+          value={newCarData.name}
           className="border p-2 rounded"
           placeholder="TYPE CAR BRAND"
           onChange={handleChange}
@@ -62,7 +54,7 @@ const CreateCar = ({ getGarage }: any) => {
         <input
           type="color"
           name="color"
-          value={NewCarData.color}
+          value={newCarData.color}
           className="size-10 cursor-pointer"
           onChange={handleChange}
         />

@@ -1,24 +1,14 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Garage from "./components/Garage/garage";
 import Header from "./components/Header/header";
 import Winners from "./components/Winners/winners";
 import "./tailwind.css";
 import "./App.css";
-
-interface CarData {
-  name: string;
-  color: string;
-  id: number;
-  isDriving: string;
-  isFinished: boolean;
-  time: number;
-  wins?: number;
-}
+import { useStateContext } from "./StateContext";
 
 function App() {
-  const [cars, setCars] = useState<CarData[] | null>(null);
-
+  const { cars, setCars } = useStateContext();
   const winners = cars?.filter((car) => car.wins && car.wins > 0);
 
   const fetchData = async () => {
@@ -78,10 +68,7 @@ function App() {
             <Route
               path="/"
               element={
-                cars &&
-                cars.length > 0 && (
-                  <Garage cars={cars} setCars={setCars} getGarage={fetchData} />
-                )
+                cars && cars.length > 0 && <Garage getGarage={fetchData} />
               }
             />
           </Routes>

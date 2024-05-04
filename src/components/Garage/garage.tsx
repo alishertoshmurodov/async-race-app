@@ -1,6 +1,7 @@
 import "../../tailwind.css";
 import "./garage.css";
 import { useState } from "react";
+import { useStateContext } from "../../StateContext";
 import CreateCar from "./createCar";
 import UpdateCar from "./updateCar";
 import GenerateCars from "./generateCars";
@@ -13,17 +14,11 @@ interface Car {
   id: number | null;
 }
 
-function Garage({
-  cars,
-  setCars,
-  getGarage,
-  getWinnersData,
-  winnersData,
-  setWinnersData,
-}: any) {
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 7;
+function Garage({ getGarage, getWinnersData }: any) {
+  const { cars, setCars } = useStateContext();
+  const { currentPage, setCurrentPage } = useStateContext();
 
+  const itemsPerPage = 7;
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const totalPageCount = Math.ceil(cars.length / itemsPerPage);
@@ -34,7 +29,7 @@ function Garage({
     id: null,
   });
 
-  const handleDelete = async (id: any) => {
+  const handleDelete = async (id: number) => {
     try {
       // Define URLs for garage and winners
       const garageUrl = `http://127.0.0.1:3000/garage/${id}`;
@@ -89,8 +84,6 @@ function Garage({
           <li key={car.id}>
             <CarElement
               car={car}
-              cars={cars}
-              setCars={setCars}
               selectedCar={selectedCar}
               handleSelect={handleSelect}
               handleDelete={handleDelete}
@@ -100,7 +93,7 @@ function Garage({
       })
     : [];
 
-  const handlePageChange = (page: any) => {
+  const handlePageChange = (page: number) => {
     if (page > 0 && page <= totalPageCount) {
       setCurrentPage(page);
     }
@@ -140,13 +133,8 @@ function Garage({
     <section className="garage max-w-6xl mx-auto">
       <div className="grid grid-cols-1 grid-rows-4 justify-items-center lg:justify-items-end md:grid-rows-2 lg:grid-rows-1 md:grid-cols-2 lg:grid-cols-4 items-center  mt-10 gap-3">
         <RaceReset
-          cars={cars}
-          setCars={setCars}
           indexOfFirstItem={indexOfFirstItem}
           indexOfLastItem={indexOfLastItem}
-          winnersData={winnersData}
-          setWinnersData={setWinnersData}
-          getGarage={getGarage}
         />
         <CreateCar getGarage={getGarage} setCars={setCars} cars={cars} />
         <UpdateCar

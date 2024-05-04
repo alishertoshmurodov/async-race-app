@@ -1,23 +1,20 @@
 import { useEffect, useState } from "react";
+import { CarData } from "../../StateContext";
 import { ReactComponent as IconPlay } from "../../assets/icon-play.svg";
 import { ReactComponent as IconReset } from "../../assets/icon-reset.svg";
+import { useStateContext } from "../../StateContext";
 
-interface Car {
-  color: string;
-  id: number;
-  isDriving: string;
-  isFinished: boolean;
-  name: string;
-  time: number;
-  wins: number;
+interface RaceResetProps {
+  indexOfFirstItem: number;
+  indexOfLastItem: number;
 }
 
 async function setEngine(
   url: string,
   carIndex: number,
-  updatedCars: any[],
+  updatedCars: CarData[],
   status: string,
-  setCars: (updateFunction: (prevCars: any[]) => any[]) => void
+  setCars: (updateFunction: (prevCars: CarData[]) => CarData[]) => void
 ) {
   try {
     const patchUrl = `${url}?id=${updatedCars[carIndex].id}&status=${status}`;
@@ -46,9 +43,7 @@ async function setEngine(
       const updatedCar = { ...newCars[carIndex] };
 
       const getTime = () =>
-        result.velocity > 0
-          ? result.distance / result.velocity / 1000
-          : undefined;
+        result.velocity > 0 ? result.distance / result.velocity / 1000 : 0;
 
       // Ensure the time value is only set during the "started" status and preserved during the "drive" status
       if (status === "started") {
@@ -80,7 +75,7 @@ async function setEngine(
   }
 }
 
-async function handleWinner(winner: Car | null) {
+async function handleWinner(winner: CarData | null) {
   if (winner) {
     const method = winner.wins > 0 ? "PUT" : "POST";
 
@@ -127,15 +122,16 @@ async function handleWinner(winner: Car | null) {
   }
 }
 
-function RaceReset({ cars, indexOfLastItem, indexOfFirstItem, setCars }: any) {
+function RaceReset({ indexOfLastItem, indexOfFirstItem }: RaceResetProps) {
+  const { cars, setCars } = useStateContext();
   const [raceStatus, setRaceStatus] = useState("start");
-  const [winner, setWinner] = useState<Car | null>(null);
+  const [winner, setWinner] = useState<CarData | null>(null);
   const [showWinner, setShowWinner] = useState(false);
 
   async function updateCarEngine(
     url: string,
     index: number,
-    cars: any,
+    cars: CarData[],
     setCars: any
   ) {
     try {
@@ -151,12 +147,13 @@ function RaceReset({ cars, indexOfLastItem, indexOfFirstItem, setCars }: any) {
 
   useEffect(() => {
     const carsWithTimes = cars.filter(
-      (car: any) =>
+      (car: CarData) =>
         car.isFinished && car.time != null && car.isDriving === "reached"
     );
     if (carsWithTimes.length > 0) {
-      const winnerCar = carsWithTimes.reduce((prev: any, current: any) =>
-        prev.time < current.time ? prev : current
+      const winnerCar = carsWithTimes.reduce(
+        (prev: CarData, current: CarData) =>
+          prev.time < current.time ? prev : current
       );
       setWinner(winnerCar);
     }
@@ -172,7 +169,7 @@ function RaceReset({ cars, indexOfLastItem, indexOfFirstItem, setCars }: any) {
     setRaceStatus("racing");
     const carPromises = cars
       .slice(indexOfFirstItem, indexOfLastItem)
-      .map((car: any, index: number) =>
+      .map((car: CarData, index: number) =>
         updateCarEngine(
           "http://127.0.0.1:3000/engine",
           indexOfFirstItem + index,
