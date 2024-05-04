@@ -1,15 +1,12 @@
 import "./winners.css";
 import IconCarComponent from "../Garage/iconCarComponent";
+import { CarData } from "../../StateContext";
 
-function Winners({ winnersData }: any) {
-  interface Winner {
-    id: number;
-    name: string;
-    color: string;
-    wins: number;
-    time: number;
-  }
+interface WinnersProps {
+  winnersData: CarData[];
+}
 
+function Winners({ winnersData }: WinnersProps) {
   return (
     <section className="winners max-w-6xl mx-auto mt-10">
       {winnersData.length > 0 ? (
@@ -24,7 +21,7 @@ function Winners({ winnersData }: any) {
             </tr>
           </thead>
           <tbody>
-            {winnersData.map((winner: Winner) => {
+            {winnersData.map((winner: CarData) => {
               return (
                 <tr key={winner.id}>
                   <td>{winner.id}</td>
