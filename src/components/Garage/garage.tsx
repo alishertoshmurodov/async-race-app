@@ -14,7 +14,7 @@ interface Car {
   id: number | null;
 }
 
-function Garage({ getGarage, getWinnersData }: any) {
+function Garage({ getGarage }: any) {
   const { cars, setCars } = useStateContext();
   const { currentPage, setCurrentPage } = useStateContext();
 
@@ -65,8 +65,8 @@ function Garage({ getGarage, getWinnersData }: any) {
         }
       });
 
-      // Optionally, fetch updated data or handle UI updates
-      getGarage();
+      const newCars = [...cars].filter((car) => car.id !== id);
+      setCars(newCars);
     } catch (error) {
       console.error("Error handling delete operation:", error);
     }
@@ -141,7 +141,6 @@ function Garage({ getGarage, getWinnersData }: any) {
           selectedCar={selectedCar}
           setSelectedCar={setSelectedCar}
           getGarage={getGarage}
-          getWinnersData={getWinnersData}
         />
         <GenerateCars getGarage={getGarage} />
       </div>
