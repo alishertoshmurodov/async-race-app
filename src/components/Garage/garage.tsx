@@ -135,6 +135,7 @@ function Garage({ getGarage }: any) {
         <RaceReset
           indexOfFirstItem={indexOfFirstItem}
           indexOfLastItem={indexOfLastItem}
+          getGarage={getGarage}
         />
         <CreateCar />
         <UpdateCar selectedCar={selectedCar} setSelectedCar={setSelectedCar} />

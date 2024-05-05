@@ -30,7 +30,7 @@ function Winners({ winnersData }: WinnersProps) {
                   </td>
                   <td>{winner.name}</td>
                   <td>{winner.wins}</td>
-                  <td>{Number(winner.time).toFixed(2)}</td>
+                  <td>{Number(winner.best).toFixed(2)}</td>
                 </tr>
               );
             })}

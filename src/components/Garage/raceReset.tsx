@@ -7,6 +7,7 @@ import { useStateContext } from "../../StateContext";
 interface RaceResetProps {
   indexOfFirstItem: number;
   indexOfLastItem: number;
+  getGarage: any;
 }
 
 async function setEngine(
@@ -75,21 +76,28 @@ async function setEngine(
   }
 }
 
-async function handleWinner(winner: CarData | null) {
+async function handleWinner(winner: CarData | null, getGarage: any) {
   if (winner) {
     const method = winner.wins > 0 ? "PUT" : "POST";
+    const getWinningTime = () => {
+      if (winner.best === 0) {
+        return winner.time;
+      } else {
+        return Math.min(winner.best, winner.time);
+      }
+    };
 
     const winnerData = (method: string) => {
       if (method === "POST") {
         return {
           id: winner.id,
           wins: ++winner.wins,
-          time: winner.time,
+          time: getWinningTime(),
         };
       } else {
         return {
           wins: ++winner.wins,
-          time: winner.time,
+          time: getWinningTime(),
         };
       }
     };
@@ -111,7 +119,7 @@ async function handleWinner(winner: CarData | null) {
         return response.json(); // Parse the JSON-encoded response body
       })
       .then((data) => {
-        console.log(data);
+        getGarage();
       })
       .catch((error) => {
         // Handle errors
@@ -122,7 +130,11 @@ async function handleWinner(winner: CarData | null) {
   }
 }
 
-function RaceReset({ indexOfLastItem, indexOfFirstItem }: RaceResetProps) {
+function RaceReset({
+  indexOfLastItem,
+  indexOfFirstItem,
+  getGarage,
+}: RaceResetProps) {
   const { cars, setCars } = useStateContext();
   const [raceStatus, setRaceStatus] = useState("start");
   const [winner, setWinner] = useState<CarData | null>(null);
@@ -147,13 +159,11 @@ function RaceReset({ indexOfLastItem, indexOfFirstItem }: RaceResetProps) {
 
   useEffect(() => {
     const carsWithTimes = cars.filter(
-      (car: CarData) =>
-        car.isFinished && car.time != null && car.isDriving === "reached"
+      (car) => car.isFinished && car.time != null && car.isDriving === "reached"
     );
     if (carsWithTimes.length > 0) {
-      const winnerCar = carsWithTimes.reduce(
-        (prev: CarData, current: CarData) =>
-          prev.time < current.time ? prev : current
+      const winnerCar = carsWithTimes.reduce((prev, current) =>
+        prev.time < current.time ? prev : current
       );
       setWinner(winnerCar);
     }
@@ -161,7 +171,7 @@ function RaceReset({ indexOfLastItem, indexOfFirstItem }: RaceResetProps) {
 
   useEffect(() => {
     if (raceStatus === "ended" && winner) {
-      handleWinner(winner);
+      handleWinner(winner, getGarage);
     }
   }, [raceStatus, winner]);
 

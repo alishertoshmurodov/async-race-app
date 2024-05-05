@@ -38,6 +38,7 @@ const CreateCar = () => {
           isFinished: false,
           time: 0,
           wins: 0,
+          best: 0,
         };
 
         newCars.push(newCar);

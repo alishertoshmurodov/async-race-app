@@ -14,6 +14,7 @@ export interface CarData {
   isFinished: boolean;
   time: number;
   wins: number;
+  best: number;
 }
 
 interface StateContextType {

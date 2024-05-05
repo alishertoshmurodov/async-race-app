@@ -6,6 +6,7 @@ import Winners from "./components/Winners/winners";
 import "./tailwind.css";
 import "./App.css";
 import { useStateContext } from "./StateContext";
+import { CarData } from "./StateContext";
 
 function App() {
   const { cars, setCars } = useStateContext();
@@ -30,8 +31,8 @@ function App() {
         winnersResponse.json(),
       ]);
 
-      const combinedData = garageData.map((car: any) => {
-        const winner = winnersData.find((w: any) => w.id === car.id);
+      const combinedData = garageData.map((car: CarData) => {
+        const winner = winnersData.find((w: CarData) => w.id === car.id);
         return {
           name: car.name,
           color: car.color,
@@ -40,6 +41,7 @@ function App() {
           isFinished: false,
           time: winner ? winner.time : 0,
           wins: winner ? winner.wins : 0,
+          best: winner ? winner.time : 0,
         };
       });
 
