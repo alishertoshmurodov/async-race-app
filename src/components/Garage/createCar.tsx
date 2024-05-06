@@ -1,31 +1,32 @@
-import { useStateContext } from '../../StateContext';
+import { ChangeEvent } from "react";
+import { useStateContext } from "../../StateContext";
 
 function CreateCar() {
   const { newCarData, setNewCarData } = useStateContext();
   const { cars, setCars } = useStateContext();
 
-  const handleChange = (e: any) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setNewCarData({
       ...newCarData,
       [e.target.name]: e.target.value,
     });
   };
 
-  const handleCreate = (e: any) => {
+  const handleCreate = (e: ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    fetch('http://127.0.0.1:3000/garage', {
-      method: 'POST',
+    fetch("http://127.0.0.1:3000/garage", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(newCarData),
     })
       .then((response) => {
         if (!response.ok) {
-          throw new Error('Network response was not ok');
+          throw new Error("Network response was not ok");
         }
-        return response.json(); // Parse the JSON-encoded response body
+        return response.json();
       })
       .then((data) => {
         const newCars = [...cars];
@@ -34,7 +35,7 @@ function CreateCar() {
           name: data.name,
           color: data.color,
           id: data.id,
-          isDriving: 'initial',
+          isDriving: "initial",
           isFinished: false,
           time: 0,
           wins: 0,
@@ -45,11 +46,10 @@ function CreateCar() {
 
         setCars(newCars);
 
-        setNewCarData({ name: '', color: '#000000' });
+        setNewCarData({ name: "", color: "#000000" });
       })
       .catch((error) => {
-        // Handle errors
-        console.error('There was a problem with your fetch operation:', error);
+        console.error("There was a problem with your fetch operation:", error);
       });
   };
 

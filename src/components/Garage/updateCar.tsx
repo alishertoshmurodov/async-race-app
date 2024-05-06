@@ -1,49 +1,52 @@
-import { useState } from 'react';
-import { useStateContext } from '../../StateContext';
+import { useState } from "react";
+import { useStateContext } from "../../StateContext";
+import { Car } from "./garage";
 
 interface Data {
   name: string;
   color: string;
 }
 
-function UpdateCar({ selectedCar, setSelectedCar }: any) {
+interface UpdateCarProps {
+  selectedCar: Car;
+  setSelectedCar: (car: Car) => void;
+}
+
+function UpdateCar({ selectedCar, setSelectedCar }: UpdateCarProps) {
   const { cars, setCars } = useStateContext();
 
-  const [updateCarData, setUpdateCarData] = useState(null);
   const [carData, setCarData] = useState<Data>({
     name: selectedCar.name,
     color: selectedCar.color,
   });
 
-  const handleUpdateCar = async (e: any) => {
+  const handleUpdateCar = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     try {
       const response = await fetch(
         `http://127.0.0.1:3000/garage/${selectedCar.id}`,
         {
-          method: 'PUT',
+          method: "PUT",
           headers: {
-            'Content-Type': 'application/json',
-            // Add any additional headers if needed
+            "Content-Type": "application/json",
           },
-          body: JSON.stringify(carData), // Add the data to be updated
-        },
+          body: JSON.stringify(carData),
+        }
       );
 
       if (!response.ok) {
-        throw new Error('Failed to update resource');
+        throw new Error("Failed to update resource");
       }
 
       const data = await response.json();
-      setUpdateCarData(data); // Update state with response data
 
       const newCars = [...cars].map((car) => {
         if (car.id === selectedCar.id) {
           return {
             ...car,
-            name: carData.name,
-            color: carData.color,
+            name: data.name,
+            color: data.color,
           };
         }
         return car;
@@ -51,12 +54,10 @@ function UpdateCar({ selectedCar, setSelectedCar }: any) {
 
       setCars(newCars);
 
-      setCarData({ name: '', color: '#000000' });
-      setSelectedCar({ name: '', color: '#000000', id: null });
-      console.log(updateCarData);
+      setCarData({ name: "", color: "#000000" });
+      setSelectedCar({ name: "", color: "#000000", id: null });
     } catch (error) {
-      console.error('Error updating resource:', error);
-      // Handle error
+      console.error("Error updating resource:", error);
     }
   };
 
@@ -83,8 +84,8 @@ function UpdateCar({ selectedCar, setSelectedCar }: any) {
           type="submit"
           className={`button ease-in-out transition !border-blue-700 text-blue-700  ${
             selectedCar.id
-              ? 'hover:text-white hover:bg-blue-500 hover:!border-white'
-              : 'opacity-50'
+              ? "hover:text-white hover:bg-blue-500 hover:!border-white"
+              : "opacity-50"
           }`}
           disabled={!selectedCar.id}
         >

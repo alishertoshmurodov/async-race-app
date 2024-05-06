@@ -1,47 +1,43 @@
 function GenerateCars({ getGarage }: any) {
   const nameParts1 = [
-    'Tesla',
-    'Ford',
-    'Chevrolet',
-    'Toyota',
-    'Honda',
-    'BMW',
-    'Mercedes',
-    'Lamborghini',
-    'Audi',
-    'Volkswagen',
+    "Tesla",
+    "Ford",
+    "Chevrolet",
+    "Toyota",
+    "Honda",
+    "BMW",
+    "Mercedes",
+    "Lamborghini",
+    "Audi",
+    "Volkswagen",
   ];
   const nameParts2 = [
-    'Model S',
-    'Mustang',
-    'Civic',
-    'Corvette',
-    'Camry',
-    'Accord',
-    '3 Series',
-    'Aventador',
-    'A6',
-    'Golf',
+    "Model S",
+    "Mustang",
+    "Civic",
+    "Corvette",
+    "Camry",
+    "Accord",
+    "3 Series",
+    "Aventador",
+    "A6",
+    "Golf",
   ];
 
-  // Function to select a random item from an array
-  const getRandomItem = (array: any) => array[Math.floor(Math.random() * array.length)];
+  const getRandomItem = (array: string[]) =>
+    array[Math.floor(Math.random() * array.length)];
 
-  // Function to generate a random car name
   const generateRandomName = () => {
     const part1 = getRandomItem(nameParts1);
     const part2 = getRandomItem(nameParts2);
     return `${part1} ${part2}`;
   };
 
-  // Function to generate a random color in hexadecimal format
   const generateRandomColor = () => {
-    // Generate random RGB values
-    const r = Math.floor(Math.random() * 256); // Random number between 0 and 255
+    const r = Math.floor(Math.random() * 256);
     const g = Math.floor(Math.random() * 256);
     const b = Math.floor(Math.random() * 256);
 
-    // Convert RGB values to hexadecimal format
     const hexColor = `#${r.toString(16)}${g.toString(16)}${b.toString(16)}`;
     return hexColor;
   };
@@ -50,11 +46,10 @@ function GenerateCars({ getGarage }: any) {
     const requestPromises = [];
 
     for (let i = 0; i < 100; i++) {
-      // Send a POST request for each iteration
-      const requestPromise = fetch('http://127.0.0.1:3000/garage', {
-        method: 'POST',
+      const requestPromise = fetch("http://127.0.0.1:3000/garage", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           name: generateRandomName(),
@@ -67,15 +62,13 @@ function GenerateCars({ getGarage }: any) {
 
     Promise.all(requestPromises)
       .then(() => {
-        // All requests completed successfully
-        console.log('All requests completed successfully');
+        console.log("All requests completed successfully");
         getGarage();
       })
       .catch((error) => {
-        // Handle errors
         console.error(
-          'There was a problem with one or more fetch operations:',
-          error,
+          "There was a problem with one or more fetch operations:",
+          error
         );
       });
   };
