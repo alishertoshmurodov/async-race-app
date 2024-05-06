@@ -1,33 +1,31 @@
-const GenerateCars = ({ getGarage }: any) => {
+function GenerateCars({ getGarage }: any) {
   const nameParts1 = [
-    "Tesla",
-    "Ford",
-    "Chevrolet",
-    "Toyota",
-    "Honda",
-    "BMW",
-    "Mercedes",
-    "Lamborghini",
-    "Audi",
-    "Volkswagen",
+    'Tesla',
+    'Ford',
+    'Chevrolet',
+    'Toyota',
+    'Honda',
+    'BMW',
+    'Mercedes',
+    'Lamborghini',
+    'Audi',
+    'Volkswagen',
   ];
   const nameParts2 = [
-    "Model S",
-    "Mustang",
-    "Civic",
-    "Corvette",
-    "Camry",
-    "Accord",
-    "3 Series",
-    "Aventador",
-    "A6",
-    "Golf",
+    'Model S',
+    'Mustang',
+    'Civic',
+    'Corvette',
+    'Camry',
+    'Accord',
+    '3 Series',
+    'Aventador',
+    'A6',
+    'Golf',
   ];
 
   // Function to select a random item from an array
-  const getRandomItem = (array: any) => {
-    return array[Math.floor(Math.random() * array.length)];
-  };
+  const getRandomItem = (array: any) => array[Math.floor(Math.random() * array.length)];
 
   // Function to generate a random car name
   const generateRandomName = () => {
@@ -53,10 +51,10 @@ const GenerateCars = ({ getGarage }: any) => {
 
     for (let i = 0; i < 100; i++) {
       // Send a POST request for each iteration
-      const requestPromise = fetch("http://127.0.0.1:3000/garage", {
-        method: "POST",
+      const requestPromise = fetch('http://127.0.0.1:3000/garage', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           name: generateRandomName(),
@@ -70,14 +68,14 @@ const GenerateCars = ({ getGarage }: any) => {
     Promise.all(requestPromises)
       .then(() => {
         // All requests completed successfully
-        console.log("All requests completed successfully");
+        console.log('All requests completed successfully');
         getGarage();
       })
       .catch((error) => {
         // Handle errors
         console.error(
-          "There was a problem with one or more fetch operations:",
-          error
+          'There was a problem with one or more fetch operations:',
+          error,
         );
       });
   };
@@ -90,6 +88,6 @@ const GenerateCars = ({ getGarage }: any) => {
       Generate Cars
     </button>
   );
-};
+}
 
 export default GenerateCars;

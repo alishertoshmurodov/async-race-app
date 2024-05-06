@@ -4,7 +4,7 @@ import React, {
   useEffect,
   useContext,
   ReactNode,
-} from "react";
+} from 'react';
 
 export interface CarData {
   name: string;
@@ -39,15 +39,15 @@ export const StateProvider: React.FC<{ children: ReactNode }> = ({
   const [cars, setCars] = useState<CarData[] | []>([]);
 
   const [currentPage, setCurrentPage] = useState<number>(
-    Number(localStorage.getItem("currentPage") || 1)
+    Number(localStorage.getItem('currentPage') || 1),
   );
   const [newCarData, setNewCarData] = useState<NewCarData>({
-    name: "",
-    color: "#000000",
+    name: '',
+    color: '#000000',
   });
 
   useEffect(() => {
-    localStorage.setItem("currentPage", currentPage.toString());
+    localStorage.setItem('currentPage', currentPage.toString());
   }, [currentPage]);
 
   return (
@@ -69,7 +69,7 @@ export const StateProvider: React.FC<{ children: ReactNode }> = ({
 export function useStateContext() {
   const context = useContext(StateContext);
   if (context === undefined) {
-    throw new Error("useStateContext must be used within a StateProvider");
+    throw new Error('useStateContext must be used within a StateProvider');
   }
   return context;
 }

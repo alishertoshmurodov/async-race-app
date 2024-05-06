@@ -1,6 +1,6 @@
-import { useStateContext } from "../../StateContext";
+import { useStateContext } from '../../StateContext';
 
-const CreateCar = () => {
+function CreateCar() {
   const { newCarData, setNewCarData } = useStateContext();
   const { cars, setCars } = useStateContext();
 
@@ -14,16 +14,16 @@ const CreateCar = () => {
   const handleCreate = (e: any) => {
     e.preventDefault();
 
-    fetch("http://127.0.0.1:3000/garage", {
-      method: "POST",
+    fetch('http://127.0.0.1:3000/garage', {
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify(newCarData),
     })
       .then((response) => {
         if (!response.ok) {
-          throw new Error("Network response was not ok");
+          throw new Error('Network response was not ok');
         }
         return response.json(); // Parse the JSON-encoded response body
       })
@@ -34,7 +34,7 @@ const CreateCar = () => {
           name: data.name,
           color: data.color,
           id: data.id,
-          isDriving: "initial",
+          isDriving: 'initial',
           isFinished: false,
           time: 0,
           wins: 0,
@@ -45,11 +45,11 @@ const CreateCar = () => {
 
         setCars(newCars);
 
-        setNewCarData({ name: "", color: "#000000" });
+        setNewCarData({ name: '', color: '#000000' });
       })
       .catch((error) => {
         // Handle errors
-        console.error("There was a problem with your fetch operation:", error);
+        console.error('There was a problem with your fetch operation:', error);
       });
   };
 
@@ -81,6 +81,6 @@ const CreateCar = () => {
       </form>
     </div>
   );
-};
+}
 
 export default CreateCar;

@@ -1,13 +1,13 @@
-import "../../tailwind.css";
-import "./garage.css";
-import { useState } from "react";
-import { useStateContext } from "../../StateContext";
-import CreateCar from "./createCar";
-import UpdateCar from "./updateCar";
-import GenerateCars from "./generateCars";
-import CarElement from "./carElement";
-import RaceReset from "./raceReset";
-import PaginationNav from "./paginationNav";
+import '../../tailwind.css';
+import './garage.css';
+import { useState } from 'react';
+import { useStateContext } from '../../StateContext';
+import CreateCar from './createCar';
+import UpdateCar from './updateCar';
+import GenerateCars from './generateCars';
+import CarElement from './carElement';
+import RaceReset from './raceReset';
+import PaginationNav from './paginationNav';
 
 interface Car {
   name: string;
@@ -25,8 +25,8 @@ function Garage({ getGarage }: any) {
   const totalPageCount = Math.ceil(cars.length / itemsPerPage);
 
   const [selectedCar, setSelectedCar] = useState<Car>({
-    name: "",
-    color: "",
+    name: '',
+    color: '',
     id: null,
   });
 
@@ -39,29 +39,29 @@ function Garage({ getGarage }: any) {
       // Send DELETE requests to both URLs using Promise.allSettled
       const results = await Promise.allSettled([
         fetch(garageUrl, {
-          method: "DELETE",
+          method: 'DELETE',
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
           },
         }),
         fetch(winnersUrl, {
-          method: "DELETE",
+          method: 'DELETE',
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
           },
         }),
       ]);
 
       // Process results
       results.forEach((result: any, index) => {
-        if (result.status === "fulfilled" && result.value.ok) {
+        if (result.status === 'fulfilled' && result.value.ok) {
           console.log(
-            `Deletion successful for ${index === 0 ? "garage" : "winners"}`
+            `Deletion successful for ${index === 0 ? 'garage' : 'winners'}`,
           );
-        } else if (result.status === "rejected" || !result.value.ok) {
+        } else if (result.status === 'rejected' || !result.value.ok) {
           console.error(
-            `Deletion failed for ${index === 0 ? "garage" : "winners"}`,
-            result.reason || result.value.statusText
+            `Deletion failed for ${index === 0 ? 'garage' : 'winners'}`,
+            result.reason || result.value.statusText,
           );
         }
       });
@@ -69,29 +69,27 @@ function Garage({ getGarage }: any) {
       const newCars = [...cars].filter((car) => car.id !== id);
       setCars(newCars);
     } catch (error) {
-      console.error("Error handling delete operation:", error);
+      console.error('Error handling delete operation:', error);
     }
   };
 
   const handleSelect = (car: Car) => {
     selectedCar === car
-      ? setSelectedCar({ name: "", color: "#000000", id: null })
+      ? setSelectedCar({ name: '', color: '#000000', id: null })
       : setSelectedCar(car);
   };
 
   const garageItemEls = cars
-    ? cars.map((car: any) => {
-        return (
-          <li key={car.id}>
-            <CarElement
-              car={car}
-              selectedCar={selectedCar}
-              handleSelect={handleSelect}
-              handleDelete={handleDelete}
-            />
-          </li>
-        );
-      })
+    ? cars.map((car: any) => (
+      <li key={car.id}>
+        <CarElement
+          car={car}
+          selectedCar={selectedCar}
+          handleSelect={handleSelect}
+          handleDelete={handleDelete}
+        />
+      </li>
+    ))
     : [];
 
   return (
@@ -115,7 +113,9 @@ function Garage({ getGarage }: any) {
       </div>
       <div className="flex items-center justify-between px-4 my-4">
         <div className="text-2xl font-bold uppercase tracking-widest">
-          Garage({garageItemEls.length})
+          Garage(
+          {garageItemEls.length}
+          )
         </div>
         {totalPageCount > 1 ? (
           <PaginationNav

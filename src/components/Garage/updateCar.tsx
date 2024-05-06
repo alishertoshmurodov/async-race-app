@@ -1,12 +1,12 @@
-import { useState } from "react";
-import { useStateContext } from "../../StateContext";
+import { useState } from 'react';
+import { useStateContext } from '../../StateContext';
 
 interface Data {
   name: string;
   color: string;
 }
 
-const UpdateCar = ({ selectedCar, setSelectedCar }: any) => {
+function UpdateCar({ selectedCar, setSelectedCar }: any) {
   const { cars, setCars } = useStateContext();
 
   const [updateCarData, setUpdateCarData] = useState(null);
@@ -22,17 +22,17 @@ const UpdateCar = ({ selectedCar, setSelectedCar }: any) => {
       const response = await fetch(
         `http://127.0.0.1:3000/garage/${selectedCar.id}`,
         {
-          method: "PUT",
+          method: 'PUT',
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
             // Add any additional headers if needed
           },
           body: JSON.stringify(carData), // Add the data to be updated
-        }
+        },
       );
 
       if (!response.ok) {
-        throw new Error("Failed to update resource");
+        throw new Error('Failed to update resource');
       }
 
       const data = await response.json();
@@ -45,18 +45,17 @@ const UpdateCar = ({ selectedCar, setSelectedCar }: any) => {
             name: carData.name,
             color: carData.color,
           };
-        } else {
-          return car;
         }
+        return car;
       });
 
       setCars(newCars);
 
-      setCarData({ name: "", color: "#000000" });
-      setSelectedCar({ name: "", color: "#000000", id: null });
+      setCarData({ name: '', color: '#000000' });
+      setSelectedCar({ name: '', color: '#000000', id: null });
       console.log(updateCarData);
     } catch (error) {
-      console.error("Error updating resource:", error);
+      console.error('Error updating resource:', error);
       // Handle error
     }
   };
@@ -77,15 +76,15 @@ const UpdateCar = ({ selectedCar, setSelectedCar }: any) => {
           type="color"
           name="color"
           className="size-10 cursor-pointer"
-          defaultValue={"#000000"}
+          defaultValue="#000000"
           onChange={(e) => setCarData({ ...carData, color: e.target.value })}
         />
         <button
           type="submit"
           className={`button ease-in-out transition !border-blue-700 text-blue-700  ${
             selectedCar.id
-              ? "hover:text-white hover:bg-blue-500 hover:!border-white"
-              : "opacity-50"
+              ? 'hover:text-white hover:bg-blue-500 hover:!border-white'
+              : 'opacity-50'
           }`}
           disabled={!selectedCar.id}
         >
@@ -94,6 +93,6 @@ const UpdateCar = ({ selectedCar, setSelectedCar }: any) => {
       </form>
     </div>
   );
-};
+}
 
 export default UpdateCar;

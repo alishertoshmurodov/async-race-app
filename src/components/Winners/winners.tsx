@@ -1,8 +1,8 @@
-import "./winners.css";
-import IconCarComponent from "../Garage/iconCarComponent";
-import { CarData } from "../../StateContext";
-import { useState } from "react";
-import PaginationNav from "../Garage/paginationNav";
+import './winners.css';
+import { useState } from 'react';
+import IconCarComponent from '../Garage/iconCarComponent';
+import { CarData } from '../../StateContext';
+import PaginationNav from '../Garage/paginationNav';
 
 interface WinnersProps {
   winnersData: CarData[];
@@ -33,19 +33,17 @@ function Winners({ winnersData }: WinnersProps) {
             <tbody>
               {winnersData
                 .slice(indexOfFirstItem, indexOfLastItem)
-                .map((winner: CarData) => {
-                  return (
-                    <tr key={winner.id}>
-                      <td>{winner.id}</td>
-                      <td>
-                        <IconCarComponent color={winner.color} />
-                      </td>
-                      <td>{winner.name}</td>
-                      <td>{winner.wins}</td>
-                      <td>{Number(winner.best).toFixed(2)}</td>
-                    </tr>
-                  );
-                })}
+                .map((winner: CarData) => (
+                  <tr key={winner.id}>
+                    <td>{winner.id}</td>
+                    <td>
+                      <IconCarComponent color={winner.color} />
+                    </td>
+                    <td>{winner.name}</td>
+                    <td>{winner.wins}</td>
+                    <td>{Number(winner.best).toFixed(2)}</td>
+                  </tr>
+                ))}
             </tbody>
           </table>
           {winnersData.length > 10 && (
